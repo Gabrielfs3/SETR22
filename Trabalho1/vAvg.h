@@ -1,0 +1,1 @@
+double vAvg(int vect[], int size);
