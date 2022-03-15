@@ -15,5 +15,4 @@ int main(){
     avg = vAvg(vect1,size);
     printf("avg = %f\n", avg);
     return 0;
-    return 0;
 }
