@@ -14,9 +14,9 @@ int main(){
 
     vinit(vect,size);
 
-    vAvg(vect,size);
-
     vSum(vect,size);
+
+    vAvg(vect,size);
 
     return 0;
 }

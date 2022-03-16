@@ -15,6 +15,6 @@ for(i = 0; i < size; i++)
 
 avg = sum/size;
 
-printf("avg = %f \n",avg);
+printf("Avg of all values is: %.2f \n",avg);
 
 }
