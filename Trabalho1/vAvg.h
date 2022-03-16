@@ -1,1 +1,1 @@
-double vAvg(int vect[], int size);
+void vAvg(int vect[], int size);

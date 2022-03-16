@@ -1,18 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-double vAvg(int vect[], int size)
+void vAvg(int vect[], int size)
 {
 
 static double avg;
 static int i;
-static int sum;
+static int sum=0;
 
-for(i = 0; i <= size; i++)
+for(i = 0; i < size; i++)
 {
-    sum += vect[i];
+    sum = vect[i]+sum;
 }
+
 avg = sum/size;
 
-return avg;
+printf("avg = %f \n",avg);
+
 }
