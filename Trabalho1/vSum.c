@@ -3,8 +3,8 @@
 
 void vSum(int vect[], int size)
 {
-    int sum = 0;
-    int j, a;
+    static int sum = 0;
+    static int j, a;
 
     for (j=0; j < size; j++)
     {
