@@ -1,21 +1,6 @@
-/**
- * @file vAvg.c
- * @author Gabriel Silva (you@domain.com)
- * @brief 
- * @version 0.1
- * @date 2022-03-21
- * 
- * @copyright Copyright (c) 2022
- * 
- */
 #include <stdio.h>
 #include <stdlib.h>
-/**
- * @brief Função para calcular a media dos valores do array
- * 
- * @param vect array
- * @param size tamanho do array
- */
+
 void vAvg(int vect[], int size)
 {
 
