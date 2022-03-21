@@ -4,3 +4,48 @@
 
 Funções simples que preenchem um array, calculam a sua soma e média.
 */
+
+
+/**
+ * @file vAvg.c
+ * @author Gabriel Silva (gabrielfs@ua.pt)
+ * @brief Função para calcular a media dos valores do array
+ * 
+ * @param vect array
+ * @param size tamanho do array
+ * @version 0.1
+ * @date 2022-03-21
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
+ 
+/**
+ * @file vinit.c
+ * @author Luis Malarmey (lmalarmey@ua.pt)
+ * @brief Função que preenche o array
+ * 
+ * @param vect Array de inteiros
+ * @param size Tamanho do array
+ * @return vect[size] 
+ * @version 0.1
+ * @date 2022-03-21
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
+ /**
+ * @file vSum.c
+ * @author Rafael Fonseca (you@domain.com)
+ * @brief Função para calcular a soma dos valores do array
+ * 
+ * @param vect Array de inteiros
+ * @param size Tamanho do array
+ * @version 0.1
+ * @date 2022-03-21
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
