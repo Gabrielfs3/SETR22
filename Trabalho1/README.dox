@@ -3,8 +3,13 @@
 @author Grupo lindo
 
 Funções simples que preenchem um array, calculam a sua soma e média.
+
 */
 
+ /*! \addtogroup Funcs
+   *  ALL the functions
+   *  @{
+   */
 
 /**
  * @file vAvg.c
@@ -49,3 +54,6 @@ Funções simples que preenchem um array, calculam a sua soma e média.
  * @copyright Copyright (c) 2022
  * 
  */
+
+ /*! @} */
+ 
