@@ -4,10 +4,17 @@
 
 int fifo[MAX_SIZE];
 int pos;
+   
+int count=0;
 
 void MyFIFOInit()
 {
-    
+    do
+    {
+       fifo[count]=0;
+       count++;
+    } while (count<MAX_SIZE);
+   printf("%d\n",fifo[10]);   
 }
 
 void MyFIFOInsert()
