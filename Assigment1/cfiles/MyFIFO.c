@@ -1,12 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "MySAGInit.h"
-#include "MySAGInsert.h"
-#include "MySAGMax.h"
-#include "MySAGMin.h"
-#include "MySAGAvg.h"
-#include "MySAGFreq.h"
-
+#include "MyFIFOInit.h"
+#include "MyFIFOInsert.h"
+#include "MyFIFORemove.h"
+#include "MyFIFOSize.h"
+#include "MyFIFOPeep.h"
 
 int main()
 {
