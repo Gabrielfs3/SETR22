@@ -30,7 +30,6 @@ void MyFIFOInsert()
             break;
         }
     }
-<<<<<<< HEAD
     printf("%d",fifo[pos]);
 }
 
@@ -44,11 +43,9 @@ void MyFIFOSize()
     }
     printf("The size of the FIFO is %d\n", tamanho);
 }
-=======
-}
 
-<<<<<<< HEAD
-=======
+
+
 void MyFIFORemove(int fifo[])
 {  
     int pos = 1, size = 0;
@@ -69,5 +66,3 @@ void MyFIFORemove(int fifo[])
     size -= 1;
 
 }
->>>>>>> c2b213b8e8be8ff05a5d76b51d0b3581b86f19ad
->>>>>>> 5527ff76c5a3a20ebbc8e65f6f70a2f149aa3bef
