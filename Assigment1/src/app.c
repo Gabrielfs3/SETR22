@@ -6,5 +6,11 @@ int main()
 {
     MyFIFOInit();
     MyFIFOInsert();
+    MyFIFOInsert();
+    MyFIFOInsert();
+    MyFIFOInsert();
+    MyFIFORemove();
+    MyFIFORemove();
+    MyFIFOPeep();
     return 0;
 }

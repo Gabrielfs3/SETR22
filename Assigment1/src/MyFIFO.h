@@ -1,5 +1,5 @@
 void MyFIFOInit();
 void MyFIFOInsert();
 void MyFIFORemove();
-int MyFIFOPeep();
-int MyFIFOSize();
+void MyFIFOPeep();
+void MyFIFOSize();
