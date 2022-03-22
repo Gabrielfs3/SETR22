@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "MyFIFOfuncs.h"
+#include "MyFIFO.h"
 
 int main()
 {
-    
+    MyFIFOInit();
     return 0;
 }
