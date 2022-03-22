@@ -30,3 +30,14 @@ void MyFIFOInsert()
     }
     printf("%d",fifo[pos]);
 }
+
+void MyFIFOSize()
+{
+    int tamanho=0;
+    for(int i=0;i<MAX_SIZE;i++)
+    {
+        if(fifo[i]!=0)
+            tamanho++;
+    }
+    printf("The size of the FIFO is %d\n", tamanho);
+}
