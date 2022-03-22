@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #define MAX_SIZE 50
 
-
-
 int fifo[MAX_SIZE];
 int pos;
 int first=0;
@@ -30,9 +28,23 @@ void MyFIFOInsert()
             break;
         }
     }
+    printf("%d",fifo[pos]);
 }
 
-void MyFIFORemove()
+void MyFIFOSize()
+{
+    int tamanho=0;
+    for(int i=0;i<MAX_SIZE;i++)
+    {
+        if(fifo[i]!=0)
+            tamanho++;
+    }
+    printf("The size of the FIFO is %d\n", tamanho);
+}
+
+
+
+void MyFIFORemove(int fifo[])
 {  
     for(int i = 0; i < MAX_SIZE; i++)
     {
@@ -44,9 +56,12 @@ void MyFIFORemove()
         }
     }
 }
+<<<<<<< HEAD
 
 void MyFIFOPeep()
 {
     printf("oldest position: %d\n",first);
     printf("oldest element: %d\n",fifo[first]);
 }
+=======
+>>>>>>> f1cd55d2550f8475dd5d0fd0af9255d7328ee9ff
