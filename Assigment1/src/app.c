@@ -4,6 +4,7 @@
 
 int main()
 {
-    
+    MyFIFOInit();
+    MyFIFOInsert();
     return 0;
 }

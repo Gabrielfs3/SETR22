@@ -3,6 +3,35 @@
 #define MAX_SIZE 50
 
 
+
+int fifo[MAX_SIZE];
+int pos;
+int first;
+int count=0;
+
+void MyFIFOInit()
+{
+    do
+    {
+       fifo[count]=0;
+       count++;
+    } while (count<MAX_SIZE);
+}
+
+void MyFIFOInsert()
+{
+    int i;
+    for (i = 0; i < MAX_SIZE; i++)
+    {
+        if(fifo[i]==0)
+        {
+            fifo[i] = 1;
+            pos = i;
+            break;
+        }
+    }
+}
+
 void MyFIFORemove(int fifo[])
 {  
     int pos = 1, size = 0;
@@ -23,5 +52,3 @@ void MyFIFORemove(int fifo[])
     size -= 1;
 
 }
-
-
