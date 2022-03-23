@@ -5,22 +5,70 @@
 Create a FIFO, add and remove elements, return its size and the oldest element.
 
 */
- /*! \addtogroup funcs
-   *  ALL the functions
-   *  @{
-   */
 
 /**
- * @file MyFIFO.c
- * @author Gabriel Silva (gabrielfs@ua.pt)
- * @brief Função para calcular a media dos valores do array
+ * \defgroup Functions All Functions
+ * @brief Documentation for the 5 functions
+ * @{
+ */ 
+void MyFIFOInit();
+void MyFIFOInsert();
+void MyFIFORemove();
+void MyFIFOPeep();
+void MyFIFOSize();
+ /** @} */
+
+/** @ingroup Functions
  * 
+ * @brief  Calling the function will start the FIFO with a maximum size of 50.
+ * @param none
+ * @return none
+ */
+void MyFIFOInit();
+ 
+/** @ingroup Functions
+ * 
+ * @brief  Calling the function will insert a 1 on the next free position.
+ * @param none
+ * @return none
+ */
+void MyFIFOInsert();
+
+/** @ingroup Functions
+ * 
+ * @brief  Calling the function will remove the oldest occupied position.
+ * @param none
+ * @return none
+ * @bug Some bugs.
+ */
+void MyFIFORemove();
+
+/** @ingroup Functions
+ * 
+ * @brief  Calling the function will print on the terminal the oldest element and his position.
+ * @param none
+ * @return none
+ */
+void MyFIFOPeep();
+
+/** @ingroup Functions
+ * 
+ * @brief  Calling the function will print on the terminal the number of elements on the fifo.
+ * @param none
+ * @return none
+ */
+void MyFIFOSize();
+
+/** @file MyFIFO.c
+ * @brief Functions Documentation
+ *
  * @version 1.0
  * @date 2022-03-23
- * 
  * @copyright Copyright (c) 2022
- * 
  */
-
  /*! @} */
- 
+
+
+
+
+
