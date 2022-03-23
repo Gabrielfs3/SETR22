@@ -48,6 +48,7 @@ void MyFIFORemove();
  * @brief  Calling the function will print on the terminal the oldest element and his position.
  * @param none
  * @return none
+ * @bug Some bugs. Doesn't work intirely like it should.
  */
 void MyFIFOPeep();
 

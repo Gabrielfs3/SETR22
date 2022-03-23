@@ -51,22 +51,9 @@ void MyFIFORemove()
     {
         if(fifo[i] != 0 && first==i)
         {
-            first=i;
-            fifo[first] = 0;
             printf("You just removed the position %d of the fifo.\n",first);
-            break;
-        }
-        else if(fifo[i] != 0 &&)
-        {
-
-            first = 0;
             fifo[first] = 0;
-            printf("You just removed the position %d of the fifo.\n",first);
-            break;
-        }
-        else
-        {
-            printf("Nothing to remove.\n");
+            first++;
             break;
         }
     }
