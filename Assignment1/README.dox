@@ -39,7 +39,7 @@ void MyFIFOInsert();
  * @brief  Calling the function will remove the oldest occupied position.
  * @param none
  * @return none
- * @bug Some bugs. Doesn't work like it should.
+ * @bug Some bugs. Doesn't work intirely like it should.
  */
 void MyFIFORemove();
 
@@ -48,7 +48,7 @@ void MyFIFORemove();
  * @brief  Calling the function will print on the terminal the oldest element and his position.
  * @param none
  * @return none
- * @bug Some bugs. Doesn't work intirely like it should.
+ * @bug Some bugs. Depends on Remove function.
  */
 void MyFIFOPeep();
 
@@ -63,7 +63,7 @@ void MyFIFOSize();
 /** @file MyFIFO.c
  * @brief Functions Documentation
  * @authors Gabriel Silva, Luis Almeida and Rafael Fonseca
- * @version 1.0
+ * @version 1.1
  * @date 2022-03-23
  * @copyright Copyright (c) 2022
  */
