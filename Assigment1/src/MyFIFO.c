@@ -28,7 +28,6 @@ void MyFIFOInsert()
             break;
         }
     }
-    printf("%d",fifo[pos]);
 }
 
 void MyFIFOSize()
@@ -42,9 +41,7 @@ void MyFIFOSize()
     printf("The size of the FIFO is %d\n", tamanho);
 }
 
-
-
-void MyFIFORemove(int fifo[])
+void MyFIFORemove()
 {  
     for(int i = 0; i < MAX_SIZE; i++)
     {
@@ -56,12 +53,9 @@ void MyFIFORemove(int fifo[])
         }
     }
 }
-<<<<<<< HEAD
 
 void MyFIFOPeep()
 {
     printf("oldest position: %d\n",first);
     printf("oldest element: %d\n",fifo[first]);
 }
-=======
->>>>>>> f1cd55d2550f8475dd5d0fd0af9255d7328ee9ff
