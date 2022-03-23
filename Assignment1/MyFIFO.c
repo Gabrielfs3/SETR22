@@ -6,6 +6,7 @@ int fifo[MAX_SIZE];
 int pos;
 int first=0;
 int count=0;
+int rear=0;
 
 void MyFIFOInit()
 {
@@ -14,6 +15,7 @@ void MyFIFOInit()
        fifo[count]=0;
        count++;
     } while (count<MAX_SIZE);
+    printf("Fifo just started.\n");
 }
 
 void MyFIFOInsert()
@@ -28,6 +30,7 @@ void MyFIFOInsert()
             break;
         }
     }
+    printf("You just inserted a 1 on fifo position: %d\n",pos);
 }
 
 void MyFIFOSize()
@@ -43,12 +46,27 @@ void MyFIFOSize()
 
 void MyFIFORemove()
 {  
+    
     for(int i = 0; i < MAX_SIZE; i++)
     {
-        if(fifo[i] != 0)
+        if(fifo[i] != 0 && first==i)
         {
+            first=i;
             fifo[first] = 0;
-            first++;
+            printf("You just removed the position %d of the fifo.\n",first);
+            break;
+        }
+        else if(fifo[i] != 0 &&)
+        {
+
+            first = 0;
+            fifo[first] = 0;
+            printf("You just removed the position %d of the fifo.\n",first);
+            break;
+        }
+        else
+        {
+            printf("Nothing to remove.\n");
             break;
         }
     }

@@ -1,0 +1,26 @@
+/**
+@mainpage SETR2122 Assignment 1
+@author Gabriel Silva, Luis Almeida e Rafael Fonseca
+
+Create a FIFO, add and remove elements, return its size and the oldest element.
+
+*/
+ /*! \addtogroup funcs
+   *  ALL the functions
+   *  @{
+   */
+
+/**
+ * @file MyFIFO.c
+ * @author Gabriel Silva (gabrielfs@ua.pt)
+ * @brief Função para calcular a media dos valores do array
+ * 
+ * @version 1.0
+ * @date 2022-03-23
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
+ /*! @} */
+ 
