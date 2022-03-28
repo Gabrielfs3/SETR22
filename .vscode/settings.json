@@ -2,5 +2,7 @@
     "files.associations": {
         "stdio.h": "c"
     },
-    "C_Cpp.errorSquiggles": "Disabled"
+    "C_Cpp.errorSquiggles": "Disabled",
+    "nrf-connect.topdir": "/home/gabriel/ncs",
+    "nrf-connect.toolchain.path": "/home/gabriel/gnuarmemb/gcc-arm-none-eabi-9-2019-q4-major"
 }
