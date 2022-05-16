@@ -99,24 +99,23 @@ void button8_pressed(const struct device *dev, struct gpio_callback *cb,
 
 const struct device *gpio0_dev;
 
-double credit = 0.0;
-double need = 0.0;
-int intpart = 0;
-int decpart = 0;
-char lista[][40] = {"Coffee","Tuna sandwich","Beer","0.50","1.0","1.50"};
-char lista2[][40] = {"With Sugar","No Sugar","With Mayonese","No Mayonese","Superbock","Heineken"};
-double prices[] = {0.50,1,1.50};
-char STATE = COINS;
-int prod = 0;
-int k;
-
 void main(void)
 {
         gpio0_dev = device_get_binding(DT_LABEL(GPIO0_NID));
         conf_buttons();
 	printk("\nVending machine just started\n\n");
         
-
+        double credit = 0.0;
+        double need = 0.0;
+        int intpart = 0;
+        int decpart = 0;
+        char lista[][40] = {"Coffee","Tuna sandwich","Beer","0.50","1.0","1.50"};
+        char lista2[][40] = {"With Sugar","No Sugar","With Mayonese","No Mayonese","Superbock","Heineken"};
+        double prices[] = {0.50,1,1.50};
+        char STATE = COINS;
+        int prod = 0;
+        int k;
+        
 		while (1) {                        
                                              
                         switch(STATE){
