@@ -1102,7 +1102,7 @@ void main(void)
  */
 	char lista[][40] = {"Coffee","Tuna sandwich","Beer","0.50","1.0","1.50"};
      cf8:	498b      	ldr	r1, [pc, #556]	; (f28 <main+0x238>)
-	char lista2[][40] = {"With Sugar","No Sugar","With Mayonese","No Mayonese","Superbock","Heineken"};
+	char lista2[][40] = {"With Sugar","No Sugar","With Mayonese","No Mayonese","Superbock","Guinness"};
 
 /**
  * @param prices List with the price of the products.
@@ -1113,7 +1113,7 @@ void main(void)
      cfc:	22f0      	movs	r2, #240	; 0xf0
      cfe:	a80a      	add	r0, sp, #40	; 0x28
      d00:	f004 ff00 	bl	5b04 <memcpy>
-	char lista2[][40] = {"With Sugar","No Sugar","With Mayonese","No Mayonese","Superbock","Heineken"};
+	char lista2[][40] = {"With Sugar","No Sugar","With Mayonese","No Mayonese","Superbock","Guinness"};
      d04:	498a      	ldr	r1, [pc, #552]	; (f30 <main+0x240>)
      d06:	22f0      	movs	r2, #240	; 0xf0
      d08:	a846      	add	r0, sp, #280	; 0x118
@@ -1404,11 +1404,11 @@ void main(void)
      f04:	2800      	cmp	r0, #0
      f06:	bfc8      	it	gt
      f08:	2604      	movgt	r6, #4
+                                    else if(gpio_pin_get_dt(&button3) > 0)
                                       STATE = SELECT;
                                   }
                                   break;
                         }
-
 			k_msleep(SLEEP_TIME_MS);
      f0a:	2001      	movs	r0, #1
      f0c:	f004 fc54 	bl	57b8 <k_msleep>

@@ -219,7 +219,7 @@ void main(void)
 /**
  * @param lista2 List with the type of products.
  */
-	char lista2[][40] = {"With Sugar","No Sugar","With Mayonese","No Mayonese","Superbock","Heineken"};
+	char lista2[][40] = {"With Sugar","No Sugar","With Mayonese","No Mayonese","Superbock","Guinness"};
 
 /**
  * @param prices List with the price of the products.
