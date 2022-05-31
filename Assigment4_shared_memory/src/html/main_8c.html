@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Assigment 3: main.c File Reference</title>
+<title>Assigment 4: main.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -20,11 +20,12 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Assigment 3
+   <div id="projectname">Assigment 4
    &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">Implementation of State Machines on Embedded Systems</div>
+   <div id="projectbrief">Implementing cooperative tasks in Zephyr</div>
   </td>
  </tr>
  </tbody>
@@ -68,183 +69,201 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Vending Machine.  
+<p>Implementing cooperative tasks in Zephyr.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;zephyr.h&gt;</code><br />
 <code>#include &lt;device.h&gt;</code><br />
 <code>#include &lt;drivers/gpio.h&gt;</code><br />
+<code>#include &lt;drivers/pwm.h&gt;</code><br />
+<code>#include &lt;sys/__assert.h&gt;</code><br />
 <code>#include &lt;sys/util.h&gt;</code><br />
 <code>#include &lt;sys/printk.h&gt;</code><br />
+<code>#include &lt;timing/timing.h&gt;</code><br />
 <code>#include &lt;inttypes.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;stdio.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
-</div><div class="textblock"><div class="dynheader">
-Include dependency graph for main.c:</div>
-<div class="dyncontent">
-<div class="center"><img src="main_8c__incl.png" border="0" usemap="#main_8c" alt=""/></div>
-</div>
+<code>#include &lt;drivers/adc.h&gt;</code><br />
+<code>#include &lt;hal/nrf_saadc.h&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr><td colspan="2"><div class="groupHeader">Time constants</div></td></tr>
-<tr><td colspan="2"><div class="groupText"><p>Two global constants.</p>
-<p>These constantes are used in main to set time. </p>
+<tr><td colspan="2"><div class="groupHeader">Threads Size Constant</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>Size of stack area used by each thread (can be thread specific, if necessary). </p>
 </div></td></tr>
-<tr class="memitem:a840217aee9bd887463dad1b56defb051"><td class="memItemLeft" align="right" valign="top"><a id="a840217aee9bd887463dad1b56defb051"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>SLEEP_TIME_MS</b>&#160;&#160;&#160;1</td></tr>
-<tr class="separator:a840217aee9bd887463dad1b56defb051"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44e89d523436fcbbf2c56e4fb335d509"><td class="memItemLeft" align="right" valign="top"><a id="a44e89d523436fcbbf2c56e4fb335d509"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>SLEEP</b>&#160;&#160;&#160;300</td></tr>
-<tr class="separator:a44e89d523436fcbbf2c56e4fb335d509"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">State constants</div></td></tr>
-<tr><td colspan="2"><div class="groupText"><p>Five global constants.</p>
-<p>These constantes are used in main for the implementation of the states </p>
+<tr class="memitem:ga6423a880df59733d2d9b509c7718d3a9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga6423a880df59733d2d9b509c7718d3a9">STACK_SIZE</a>&#160;&#160;&#160;1024</td></tr>
+<tr class="separator:ga6423a880df59733d2d9b509c7718d3a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Threads Priority Constants</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>Thread scheduling priority. </p>
 </div></td></tr>
-<tr class="memitem:a6f03ef1c79b1a616f381ade5188a571a"><td class="memItemLeft" align="right" valign="top"><a id="a6f03ef1c79b1a616f381ade5188a571a"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>COINS</b>&#160;&#160;&#160;1</td></tr>
-<tr class="separator:a6f03ef1c79b1a616f381ade5188a571a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aed0a8f83088c41d721066cd5b3b9a00c"><td class="memItemLeft" align="right" valign="top"><a id="aed0a8f83088c41d721066cd5b3b9a00c"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>LIST</b>&#160;&#160;&#160;2</td></tr>
-<tr class="separator:aed0a8f83088c41d721066cd5b3b9a00c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53dc4af00adc7b3b4d12eafb71596dfc"><td class="memItemLeft" align="right" valign="top"><a id="a53dc4af00adc7b3b4d12eafb71596dfc"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>SELECT</b>&#160;&#160;&#160;3</td></tr>
-<tr class="separator:a53dc4af00adc7b3b4d12eafb71596dfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6a0e6b80dd3d5ca395cf58151749f5e2"><td class="memItemLeft" align="right" valign="top"><a id="a6a0e6b80dd3d5ca395cf58151749f5e2"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>RETURN</b>&#160;&#160;&#160;4</td></tr>
-<tr class="separator:a6a0e6b80dd3d5ca395cf58151749f5e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0bdf5c7a99ef654c2579d0d30e4a76b9"><td class="memItemLeft" align="right" valign="top"><a id="a0bdf5c7a99ef654c2579d0d30e4a76b9"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>CHOOSE</b>&#160;&#160;&#160;5</td></tr>
-<tr class="separator:a0bdf5c7a99ef654c2579d0d30e4a76b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">Buttons constants</div></td></tr>
-<tr><td colspan="2"><div class="groupText"><p>Nine global constants.</p>
-<p>These constantes are used for the buttons. </p>
+<tr class="memitem:ga60151fb40d88993506f29dc2f8c348d4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga60151fb40d88993506f29dc2f8c348d4">read_thread_prio</a>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:ga60151fb40d88993506f29dc2f8c348d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf3fad3273563c52bd3798f2ce2c00f5e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gaf3fad3273563c52bd3798f2ce2c00f5e">filter_thread_prio</a>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:gaf3fad3273563c52bd3798f2ce2c00f5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacd3253de18504ed261dccb1bfe32ac28"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gacd3253de18504ed261dccb1bfe32ac28">out_thread_prio</a>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:gacd3253de18504ed261dccb1bfe32ac28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Threads Time Constant</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>Therads periodicity (in ms). </p>
 </div></td></tr>
-<tr class="memitem:a4c0e6f34369bef1deb3a9efae6ac14fb"><td class="memItemLeft" align="right" valign="top"><a id="a4c0e6f34369bef1deb3a9efae6ac14fb"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>GPIO0_NID</b>&#160;&#160;&#160;DT_NODELABEL(gpio0)</td></tr>
-<tr class="separator:a4c0e6f34369bef1deb3a9efae6ac14fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea6f782003374f75cd7ff90a9984658a"><td class="memItemLeft" align="right" valign="top"><a id="aea6f782003374f75cd7ff90a9984658a"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>SW0_NODE</b>&#160;&#160;&#160;DT_ALIAS(sw0)</td></tr>
-<tr class="separator:aea6f782003374f75cd7ff90a9984658a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8edd878bd0482810292af09577d6043"><td class="memItemLeft" align="right" valign="top"><a id="ae8edd878bd0482810292af09577d6043"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>SW1_NODE</b>&#160;&#160;&#160;DT_ALIAS(sw1)</td></tr>
-<tr class="separator:ae8edd878bd0482810292af09577d6043"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95412eab3eaa7eea6d2fd759808aa75a"><td class="memItemLeft" align="right" valign="top"><a id="a95412eab3eaa7eea6d2fd759808aa75a"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>SW2_NODE</b>&#160;&#160;&#160;DT_ALIAS(sw2)</td></tr>
-<tr class="separator:a95412eab3eaa7eea6d2fd759808aa75a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9cfd8e77d4a98829ca6f1ea5c34b55b4"><td class="memItemLeft" align="right" valign="top"><a id="a9cfd8e77d4a98829ca6f1ea5c34b55b4"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>SW3_NODE</b>&#160;&#160;&#160;DT_ALIAS(sw3)</td></tr>
-<tr class="separator:a9cfd8e77d4a98829ca6f1ea5c34b55b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78129daaaff472b11b46ca6dc212bc51"><td class="memItemLeft" align="right" valign="top"><a id="a78129daaaff472b11b46ca6dc212bc51"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>SW4_NODE</b>&#160;&#160;&#160;0x3</td></tr>
-<tr class="separator:a78129daaaff472b11b46ca6dc212bc51"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0158782f70a4ab70b4a0f6fc6ce2a1f"><td class="memItemLeft" align="right" valign="top"><a id="ac0158782f70a4ab70b4a0f6fc6ce2a1f"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>SW5_NODE</b>&#160;&#160;&#160;0x4</td></tr>
-<tr class="separator:ac0158782f70a4ab70b4a0f6fc6ce2a1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb920c44779eab3c19a4c9d74fe3d51b"><td class="memItemLeft" align="right" valign="top"><a id="adb920c44779eab3c19a4c9d74fe3d51b"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>SW6_NODE</b>&#160;&#160;&#160;0x1c</td></tr>
-<tr class="separator:adb920c44779eab3c19a4c9d74fe3d51b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acad01311dadfc1cdfc357af97e9fc86d"><td class="memItemLeft" align="right" valign="top"><a id="acad01311dadfc1cdfc357af97e9fc86d"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>SW7_NODE</b>&#160;&#160;&#160;0x1d</td></tr>
-<tr class="separator:acad01311dadfc1cdfc357af97e9fc86d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaccef7cc68292da9ce47ae82b44b73224"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gaccef7cc68292da9ce47ae82b44b73224">read_thread_period</a>&#160;&#160;&#160;1000</td></tr>
+<tr class="separator:gaccef7cc68292da9ce47ae82b44b73224"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">ADC Constants</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p><a class="el" href="struct_a_d_c.html" title="ADC channel configuration.">ADC</a> definitions and includes. </p>
+</div></td></tr>
+<tr class="memitem:ga667158ed9af1b72bf062e54bda71dd4f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___a_d_c.html#ga667158ed9af1b72bf062e54bda71dd4f">ADC_NID</a>&#160;&#160;&#160;DT_NODELABEL(adc)</td></tr>
+<tr class="separator:ga667158ed9af1b72bf062e54bda71dd4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga00978ca9e8220475258dcbbbb7d29129"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___a_d_c.html#ga00978ca9e8220475258dcbbbb7d29129">ADC_RESOLUTION</a>&#160;&#160;&#160;10</td></tr>
+<tr class="separator:ga00978ca9e8220475258dcbbbb7d29129"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2bbc7e1578f01928d36ef7fa94ac4905"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___a_d_c.html#ga2bbc7e1578f01928d36ef7fa94ac4905">ADC_GAIN</a>&#160;&#160;&#160;ADC_GAIN_1_4</td></tr>
+<tr class="separator:ga2bbc7e1578f01928d36ef7fa94ac4905"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga317868c528ebe27fbca094a8bc2d910c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___a_d_c.html#ga317868c528ebe27fbca094a8bc2d910c">ADC_REFERENCE</a>&#160;&#160;&#160;ADC_REF_VDD_1_4</td></tr>
+<tr class="separator:ga317868c528ebe27fbca094a8bc2d910c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaeb8de5967ac4465f35317d818eeb129b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___a_d_c.html#gaeb8de5967ac4465f35317d818eeb129b">ADC_ACQUISITION_TIME</a>&#160;&#160;&#160;ADC_ACQ_TIME(ADC_ACQ_TIME_MICROSECONDS, 40)</td></tr>
+<tr class="separator:gaeb8de5967ac4465f35317d818eeb129b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8bfca74ee546715af6682194ea92286a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___a_d_c.html#ga8bfca74ee546715af6682194ea92286a">ADC_CHANNEL_ID</a>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:ga8bfca74ee546715af6682194ea92286a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">ADC Channel Constant</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>This is the actual nRF ANx input to use. Note that a channel can be assigned to any ANx. In fact a channel can </p>
+</div></td></tr>
+<tr class="memitem:ga5508ef7e762284248c2e87e16865522e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___a_d_c.html#ga5508ef7e762284248c2e87e16865522e">ADC_CHANNEL_INPUT</a>&#160;&#160;&#160;NRF_SAADC_INPUT_AIN1</td></tr>
+<tr class="separator:ga5508ef7e762284248c2e87e16865522e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">ADC Buffer Size Constant</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>This initialize the buffer size with the value of 1. </p>
+</div></td></tr>
+<tr class="memitem:ga6b20d41d6252e9871430c242cb1a56e7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___a_d_c.html#ga6b20d41d6252e9871430c242cb1a56e7">BUFFER_SIZE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:ga6b20d41d6252e9871430c242cb1a56e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">PWM Constants</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>This constants are related to the configuration of PWM ports. </p>
+</div></td></tr>
+<tr class="memitem:gab48b150a8660d0152dfde25b42c1755f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_w_m.html#gab48b150a8660d0152dfde25b42c1755f">PWM0_NID</a>&#160;&#160;&#160;DT_NODELABEL(pwm0)</td></tr>
+<tr class="separator:gab48b150a8660d0152dfde25b42c1755f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4c0e6f34369bef1deb3a9efae6ac14fb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_w_m.html#ga4c0e6f34369bef1deb3a9efae6ac14fb">GPIO0_NID</a>&#160;&#160;&#160;DT_NODELABEL(gpio0)</td></tr>
+<tr class="separator:ga4c0e6f34369bef1deb3a9efae6ac14fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">LED Constants</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>This constants are related to the configuration of LED output. </p>
+</div></td></tr>
+<tr class="memitem:ga1d9c1c63a861a9ee9aeb1c4cbab69d20"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___l_e_d.html#ga1d9c1c63a861a9ee9aeb1c4cbab69d20">NLED1</a>&#160;&#160;&#160;0x0d</td></tr>
+<tr class="separator:ga1d9c1c63a861a9ee9aeb1c4cbab69d20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa53838d709e84b35af1f5540b28c6e62"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___l_e_d.html#gaa53838d709e84b35af1f5540b28c6e62">NPOT</a>&#160;&#160;&#160;0x3</td></tr>
+<tr class="separator:gaa53838d709e84b35af1f5540b28c6e62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr><td colspan="2"><div class="groupHeader">Buttons Configuration</div></td></tr>
-<tr><td colspan="2"><div class="groupText"><p>This function have the objetive of configure all the buttons. </p>
+<tr><td colspan="2"><div class="groupHeader">Threads Space Functions</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>Create threads stack space. </p>
 </div></td></tr>
-<tr class="memitem:a82e0816c1b5c424a979704014d4c0e49"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a82e0816c1b5c424a979704014d4c0e49">conf_buttons</a> ()</td></tr>
-<tr class="separator:a82e0816c1b5c424a979704014d4c0e49"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">Button Fuctions 1</div></td></tr>
-<tr><td colspan="2"><div class="groupText"><p>Four Functions for the buttons of the Nordik development kit.</p>
-<p>These four functions aim to read impulses of the buttons of Nordik development kit. </p>
+<tr class="memitem:gab3a488d96fb66a6bdbf1ec610a19f59a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gab3a488d96fb66a6bdbf1ec610a19f59a">K_THREAD_STACK_DEFINE</a> (read_thread_stack, <a class="el" href="group___threads.html#ga6423a880df59733d2d9b509c7718d3a9">STACK_SIZE</a>)</td></tr>
+<tr class="separator:gab3a488d96fb66a6bdbf1ec610a19f59a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa63cce7d34ec4212d3e0a091c98190cf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gaa63cce7d34ec4212d3e0a091c98190cf">K_THREAD_STACK_DEFINE</a> (filter_thread_stack, <a class="el" href="group___threads.html#ga6423a880df59733d2d9b509c7718d3a9">STACK_SIZE</a>)</td></tr>
+<tr class="separator:gaa63cce7d34ec4212d3e0a091c98190cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga500d5d5c319974e8c941a9e708890b63"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga500d5d5c319974e8c941a9e708890b63">K_THREAD_STACK_DEFINE</a> (out_thread_stack, <a class="el" href="group___threads.html#ga6423a880df59733d2d9b509c7718d3a9">STACK_SIZE</a>)</td></tr>
+<tr class="separator:ga500d5d5c319974e8c941a9e708890b63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Read Thread</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>This thread have the objective to read <a class="el" href="struct_a_d_c.html" title="ADC channel configuration.">ADC</a>, get one sample, check if are errors and print the value. </p>
 </div></td></tr>
-<tr class="memitem:abdc045bd835fce4b7a787c2d3c7ad09c"><td class="memItemLeft" align="right" valign="top"><a id="abdc045bd835fce4b7a787c2d3c7ad09c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>button1_pressed</b> (const struct device *dev, struct gpio_callback *cb, uint32_t pins)</td></tr>
-<tr class="separator:abdc045bd835fce4b7a787c2d3c7ad09c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a121e016929b5a6955e5aa6de839e6587"><td class="memItemLeft" align="right" valign="top"><a id="a121e016929b5a6955e5aa6de839e6587"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>button2_pressed</b> (const struct device *dev, struct gpio_callback *cb, uint32_t pins)</td></tr>
-<tr class="separator:a121e016929b5a6955e5aa6de839e6587"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae03bc6b7fb4eb60066fdbb3654fc34ad"><td class="memItemLeft" align="right" valign="top"><a id="ae03bc6b7fb4eb60066fdbb3654fc34ad"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>button3_pressed</b> (const struct device *dev, struct gpio_callback *cb, uint32_t pins)</td></tr>
-<tr class="separator:ae03bc6b7fb4eb60066fdbb3654fc34ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae7fc593a19c3f480abd0e797b990e553"><td class="memItemLeft" align="right" valign="top"><a id="ae7fc593a19c3f480abd0e797b990e553"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>button4_pressed</b> (const struct device *dev, struct gpio_callback *cb, uint32_t pins)</td></tr>
-<tr class="separator:ae7fc593a19c3f480abd0e797b990e553"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">Button Fuctions 2</div></td></tr>
-<tr><td colspan="2"><div class="groupText"><p>Four Functions for the external buttons.</p>
-<p>These four functions have the objective of emulate the insertion of coins, when the button is press flag goes 1 (fX = 1). </p>
+<tr class="memitem:ga28f7d0db4afde2ac3fa6ee5b317bb177"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga28f7d0db4afde2ac3fa6ee5b317bb177">read_thread_code</a> (void *argA, void *argB, void *argC)</td></tr>
+<tr class="separator:ga28f7d0db4afde2ac3fa6ee5b317bb177"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Filter Thread</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>This thread is a moving average filter, with a window size of 10 samples. Removes the outliers (10% or high deviation from average) and computes the average of the remaining samples. </p>
 </div></td></tr>
-<tr class="memitem:abc97e3cff22c4c1baa061cde9e674154"><td class="memItemLeft" align="right" valign="top"><a id="abc97e3cff22c4c1baa061cde9e674154"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>button5_pressed</b> (const struct device *dev, struct gpio_callback *cb, uint32_t pins)</td></tr>
-<tr class="separator:abc97e3cff22c4c1baa061cde9e674154"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae62fd2837edf7f7af87604f511052761"><td class="memItemLeft" align="right" valign="top"><a id="ae62fd2837edf7f7af87604f511052761"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>button6_pressed</b> (const struct device *dev, struct gpio_callback *cb, uint32_t pins)</td></tr>
-<tr class="separator:ae62fd2837edf7f7af87604f511052761"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37e239f7abc5df44af4251980c3df66e"><td class="memItemLeft" align="right" valign="top"><a id="a37e239f7abc5df44af4251980c3df66e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>button7_pressed</b> (const struct device *dev, struct gpio_callback *cb, uint32_t pins)</td></tr>
-<tr class="separator:a37e239f7abc5df44af4251980c3df66e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36cfe4fd923a704c6713ab1a413fd6dd"><td class="memItemLeft" align="right" valign="top"><a id="a36cfe4fd923a704c6713ab1a413fd6dd"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>button8_pressed</b> (const struct device *dev, struct gpio_callback *cb, uint32_t pins)</td></tr>
-<tr class="separator:a36cfe4fd923a704c6713ab1a413fd6dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7f8f52598969d7620c9db4d99a02ccba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga7f8f52598969d7620c9db4d99a02ccba">filter_thread_code</a> (void *argA, void *argB, void *argC)</td></tr>
+<tr class="separator:ga7f8f52598969d7620c9db4d99a02ccba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Output Thread</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>This thread send a pwm signal to one of the DevKit led. </p>
+</div></td></tr>
+<tr class="memitem:ga2feb211182bfd81e27d2437b0e91a2f7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga2feb211182bfd81e27d2437b0e91a2f7">out_thread_code</a> (void *argA, void *argB, void *argC)</td></tr>
+<tr class="separator:ga2feb211182bfd81e27d2437b0e91a2f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">ADC Configuration Function</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>This function give us the information if <a class="el" href="struct_a_d_c.html" title="ADC channel configuration.">ADC</a> configuration was successful or not. </p>
+</div></td></tr>
+<tr class="memitem:gaf5e0a217880b6f6976ff1c2b1297f7a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___a_d_c.html#gaf5e0a217880b6f6976ff1c2b1297f7a3">adc_setup</a> ()</td></tr>
+<tr class="separator:gaf5e0a217880b6f6976ff1c2b1297f7a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">ADC Sample Function</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>This function reading and geting one sample of the potenciometer. </p>
+</div></td></tr>
+<tr><td colspan="2"><div class="groupHeader">PWM Configuration Function</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>This function give us the information if the ports configuration was successful or not. </p>
+</div></td></tr>
+<tr class="memitem:ga4ba13bb7d20dc93cebfcb1986ce3c876"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_w_m.html#ga4ba13bb7d20dc93cebfcb1986ce3c876">conf</a> ()</td></tr>
+<tr class="separator:ga4ba13bb7d20dc93cebfcb1986ce3c876"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Main</div></td></tr>
-<tr><td colspan="2"><div class="groupText"><p>State machine according with state diagram. Each case of switch is a state. </p>
+<tr><td colspan="2"><div class="groupText"><p>The main initialize the configurations, create threads and semaphores. </p>
 </div></td></tr>
 <tr class="memitem:a6288eba0f8e8ad3ab1544ad731eb7667"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a6288eba0f8e8ad3ab1544ad731eb7667">main</a> (void)</td></tr>
 <tr class="separator:a6288eba0f8e8ad3ab1544ad731eb7667"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr><td colspan="2"><div class="groupHeader">Buttons structures</div></td></tr>
-<tr class="memitem:ac8529dec83e91f71d383fb84302cfb27"><td class="memItemLeft" align="right" valign="top"><a id="ac8529dec83e91f71d383fb84302cfb27"></a>
-const struct device *&#160;</td><td class="memItemRight" valign="bottom"><b>gpio0_dev</b></td></tr>
-<tr class="separator:ac8529dec83e91f71d383fb84302cfb27"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">Flags</div></td></tr>
-<tr><td colspan="2"><div class="groupText"><p>Four global variables. </p>
+<tr><td colspan="2"><div class="groupHeader">Global Variables</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>This are global variables used on the file <a class="el" href="main_8c.html" title="Implementing cooperative tasks in Zephyr.">main.c</a>. </p>
 </div></td></tr>
-<tr class="memitem:af87a0c06a8b9c12ffdf647434bf4d6e8"><td class="memItemLeft" align="right" valign="top"><a id="af87a0c06a8b9c12ffdf647434bf4d6e8"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>f5</b> = 0</td></tr>
-<tr class="separator:af87a0c06a8b9c12ffdf647434bf4d6e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ffaeacb20b3719e6a1480d2db77ee03"><td class="memItemLeft" align="right" valign="top"><a id="a5ffaeacb20b3719e6a1480d2db77ee03"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>f6</b> = 0</td></tr>
-<tr class="separator:a5ffaeacb20b3719e6a1480d2db77ee03"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec0df4a697350f78eb0cefdaaf410a12"><td class="memItemLeft" align="right" valign="top"><a id="aec0df4a697350f78eb0cefdaaf410a12"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>f7</b> = 0</td></tr>
-<tr class="separator:aec0df4a697350f78eb0cefdaaf410a12"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e838974c6ddd229dee3fc2ebddf4a21"><td class="memItemLeft" align="right" valign="top"><a id="a5e838974c6ddd229dee3fc2ebddf4a21"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>f8</b> = 0</td></tr>
-<tr class="separator:a5e838974c6ddd229dee3fc2ebddf4a21"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a807a19e3c8fd448311f5b1fe5884cdc4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a807a19e3c8fd448311f5b1fe5884cdc4">adc_value</a></td></tr>
+<tr class="separator:a807a19e3c8fd448311f5b1fe5884cdc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a0c6e7a5c651b3599a33e468761cd47"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a7a0c6e7a5c651b3599a33e468761cd47">adc_out</a></td></tr>
+<tr class="separator:a7a0c6e7a5c651b3599a33e468761cd47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ce68847c12434f60d1b2654a3dc3409"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a6ce68847c12434f60d1b2654a3dc3409">err</a> = 0</td></tr>
+<tr class="separator:a6ce68847c12434f60d1b2654a3dc3409"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6baa346e44f4c2158d2be4f9b77b8203"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a6baa346e44f4c2158d2be4f9b77b8203">ret</a></td></tr>
+<tr class="separator:a6baa346e44f4c2158d2be4f9b77b8203"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96e49922520b01a566fa37b365c4ac73"><td class="memItemLeft" align="right" valign="top">long int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a96e49922520b01a566fa37b365c4ac73">nact</a> = 0</td></tr>
+<tr class="separator:a96e49922520b01a566fa37b365c4ac73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Threads Structures</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>Create variables for thread data. </p>
+</div></td></tr>
+<tr class="memitem:ga53a432c2c03a4ec961f6c530d5784f39"><td class="memItemLeft" align="right" valign="top">struct k_thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga53a432c2c03a4ec961f6c530d5784f39">read_thread_data</a></td></tr>
+<tr class="separator:ga53a432c2c03a4ec961f6c530d5784f39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab78686b80fbf5adc8a2385af6e2db579"><td class="memItemLeft" align="right" valign="top">struct k_thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gab78686b80fbf5adc8a2385af6e2db579">filter_thread_data</a></td></tr>
+<tr class="separator:gab78686b80fbf5adc8a2385af6e2db579"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0a0d30375bc14a233389b047ca068c92"><td class="memItemLeft" align="right" valign="top">struct k_thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga0a0d30375bc14a233389b047ca068c92">out_thread_data</a></td></tr>
+<tr class="separator:ga0a0d30375bc14a233389b047ca068c92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Threads IDs</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>Creating task IDs. </p>
+</div></td></tr>
+<tr class="memitem:ga8a624b1680a1282d93886fda1060c51f"><td class="memItemLeft" align="right" valign="top">k_tid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga8a624b1680a1282d93886fda1060c51f">read_thread_tid</a></td></tr>
+<tr class="separator:ga8a624b1680a1282d93886fda1060c51f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4591b10f916f5411c9a264a6ed53c0f0"><td class="memItemLeft" align="right" valign="top">k_tid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga4591b10f916f5411c9a264a6ed53c0f0">filter_thread_tid</a></td></tr>
+<tr class="separator:ga4591b10f916f5411c9a264a6ed53c0f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga994e98a9ddd4636a113e3decc099616a"><td class="memItemLeft" align="right" valign="top">k_tid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga994e98a9ddd4636a113e3decc099616a">out_thread_tid</a></td></tr>
+<tr class="separator:ga994e98a9ddd4636a113e3decc099616a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Threads Semaphores</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>Semaphores for task synch. </p>
+</div></td></tr>
+<tr class="memitem:ga82e13125c2f279157fcf738219ff21ba"><td class="memItemLeft" align="right" valign="top">struct k_sem&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga82e13125c2f279157fcf738219ff21ba">sem_ab</a></td></tr>
+<tr class="separator:ga82e13125c2f279157fcf738219ff21ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaddc907d18e7e98a64a832ac1c7be5ad1"><td class="memItemLeft" align="right" valign="top">struct k_sem&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gaddc907d18e7e98a64a832ac1c7be5ad1">sem_bc</a></td></tr>
+<tr class="separator:gaddc907d18e7e98a64a832ac1c7be5ad1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">PWM Structures</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>This variables are related to the configuration of PWM ports. </p>
+</div></td></tr>
+<tr class="memitem:ga07b9a1d80376da71898a69d1c83850d4"><td class="memItemLeft" align="right" valign="top">const struct device *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_w_m.html#ga07b9a1d80376da71898a69d1c83850d4">pwm0_dev</a></td></tr>
+<tr class="separator:ga07b9a1d80376da71898a69d1c83850d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac8529dec83e91f71d383fb84302cfb27"><td class="memItemLeft" align="right" valign="top">const struct device *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_w_m.html#gac8529dec83e91f71d383fb84302cfb27">gpio0_dev</a></td></tr>
+<tr class="separator:gac8529dec83e91f71d383fb84302cfb27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">PWM Period Variable</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>This variable set the period of PWM. </p>
+</div></td></tr>
+<tr class="memitem:ga15f86ab5a7130e95bce1eb5e0083536d"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_w_m.html#ga15f86ab5a7130e95bce1eb5e0083536d">pwmPeriod_us</a> = 1000</td></tr>
+<tr class="separator:ga15f86ab5a7130e95bce1eb5e0083536d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
+ADC Time Constant</h2></td></tr>
+<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp8539a0d34ff46c976b645e8d3df357fc"></a>Interval between <a class="el" href="struct_a_d_c.html" title="ADC channel configuration.">ADC</a> samples </p>
+</td></tr>
+<tr class="memitem:ga44922b22662c1ec8ea745d0e3e2dae3f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___a_d_c.html#ga44922b22662c1ec8ea745d0e3e2dae3f">TIMER_INTERVAL_MSEC</a>&#160;&#160;&#160;1000</td></tr>
+<tr class="separator:ga44922b22662c1ec8ea745d0e3e2dae3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga80d0933bb7a6454573b3ade529a72418"><td class="memItemLeft" align="right" valign="top">struct k_timer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___a_d_c.html#ga80d0933bb7a6454573b3ade529a72418">my_timer</a></td></tr>
+<tr class="separator:ga80d0933bb7a6454573b3ade529a72418"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga445f79326d40128ece59a749adff6894"><td class="memItemLeft" align="right" valign="top">const struct device *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___a_d_c.html#ga445f79326d40128ece59a749adff6894">adc_dev</a> = NULL</td></tr>
+<tr class="separator:ga445f79326d40128ece59a749adff6894"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Vending Machine. </p>
-<p>The file <a class="el" href="main_8c.html" title="Vending Machine.">main.c</a> simule an embedded application that emulates a vending machine. The vending machine accepts a subset of coins and allows the user to browse available products, buy one product and return the credit. The inputs are push-buttons and the output is done via UART/Terminal.</p>
-<dl class="section author"><dt>Author</dt><dd>Rafael Fonseca, Gabriel Silva e Luis Almeida </dd></dl>
-<dl class="section date"><dt>Date</dt><dd>7 May 2022 </dd></dl>
+<div class="textblock"><p>Implementing cooperative tasks in Zephyr. </p>
+<pre class="fragment">          The file main.c implement a set of cooperative real-time tasks in
+          Zephyr. In this file we are using threads and semaphores to execute the tasks.
+</pre><dl class="section author"><dt>Author</dt><dd>Rafael Fonseca, Gabriel Silva e Luis Almeida </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>30 May 2022 </dd></dl>
 <dl class="bug"><dt><b><a class="el" href="bug.html#_bug000001">Bug:</a></b></dt><dd>No known bugs. </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a82e0816c1b5c424a979704014d4c0e49"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a82e0816c1b5c424a979704014d4c0e49">&#9670;&nbsp;</a></span>conf_buttons()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void conf_buttons </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">ret</td><td>Variable that configure the input of the buttons.</td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="a6288eba0f8e8ad3ab1544ad731eb7667"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6288eba0f8e8ad3ab1544ad731eb7667">&#9670;&nbsp;</a></span>main()</h2>
 
@@ -260,21 +279,77 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>f8</b> = 0</td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">credit</td><td>Variable that simulate the credit of vending machine.</td></tr>
-    <tr><td class="paramname">need</td><td>Variable that simulate the credit needed to buy a product.</td></tr>
-    <tr><td class="paramname">intpart</td><td>Variable that permits to print the double format.</td></tr>
-    <tr><td class="paramname">decpart</td><td>Variable that permits to print the double format.</td></tr>
-    <tr><td class="paramname">lista</td><td>List of products and price.</td></tr>
-    <tr><td class="paramname">lista2</td><td>List with the type of products.</td></tr>
-    <tr><td class="paramname">prices</td><td>List with the price of the products.</td></tr>
-    <tr><td class="paramname">state</td><td>Variable that indicates the first state.</td></tr>
-    <tr><td class="paramname">prod</td><td>Variable that increments the product and price</td></tr>
-    <tr><td class="paramname">extra</td><td>Variable to print list2.</td></tr>
-  </table>
-  </dd>
-</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a7a0c6e7a5c651b3599a33e468761cd47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a0c6e7a5c651b3599a33e468761cd47">&#9670;&nbsp;</a></span>adc_out</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int adc_out</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a807a19e3c8fd448311f5b1fe5884cdc4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a807a19e3c8fd448311f5b1fe5884cdc4">&#9670;&nbsp;</a></span>adc_value</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int adc_value</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6ce68847c12434f60d1b2654a3dc3409"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ce68847c12434f60d1b2654a3dc3409">&#9670;&nbsp;</a></span>err</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int err = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a96e49922520b01a566fa37b365c4ac73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a96e49922520b01a566fa37b365c4ac73">&#9670;&nbsp;</a></span>nact</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">long int nact = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6baa346e44f4c2158d2be4f9b77b8203"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6baa346e44f4c2158d2be4f9b77b8203">&#9670;&nbsp;</a></span>ret</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ret</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

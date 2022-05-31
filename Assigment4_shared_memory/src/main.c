@@ -5,22 +5,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/**   @file main.c
- *    @brief Vending Machine
+/**   @file         main.c
+ *    @brief        Implementing cooperative tasks in Zephyr
  *
- *    The file main.c simule an embedded application that emulates a vending
- *    machine. The vending machine accepts a subset of coins and allows the user to browse available
- *    products, buy one product and return the credit. The inputs are push-buttons and the output is done
- *    via UART/Terminal. 
+ *                  The file main.c implement a set of cooperative real-time tasks in
+ *	                Zephyr. In this file we are using threads and semaphores to execute the tasks.
+ *
  * 
- *    @author Rafael Fonseca, Gabriel Silva e Luis Almeida
- *    @date 7 May 2022
- *    @bug No known bugs.
+ *    @author       Rafael Fonseca, Gabriel Silva e Luis Almeida
+ *    @date         30 May 2022
+ *    @bug          No known bugs.
  */
 
 
 
-/* Includes */
+/**
+ * @{ @name         Global Includes
+ *    @brief        This are the global includes to the file main.c.
+ *
+ */
 #include <zephyr.h>
 #include <device.h>
 #include <drivers/gpio.h>
@@ -35,56 +38,169 @@
 #include <string.h>
 #include <drivers/gpio.h>
 #include <drivers/adc.h>
+/**
+* @}
+*/
+
 
 /* ##################### Global Vars ##########################*/
 
+/**
+ * @{ @name         Global Variables
+ *    @brief        This are global variables used on the file main.c.
+ *
+ */
 int adc_value;
 int adc_out;
-
 int err = 0;
 int ret;
 long int nact = 0;
+/**
+* @}
+*/
 
 /* ##################### Threads ##########################*/
 
-/* Size of stack area used by each thread (can be thread specific, if necessary)*/
+/** @defgroup       Threads
+*
+*  @{
+*/
+
+/**
+* @addtogroup       Threads
+* @name             Threads Size Constant
+* @brief            Size of stack area used by each thread (can be thread specific, if necessary).
+*/
 #define STACK_SIZE 1024
 
-/* Thread scheduling priority */
+
+/**
+ * @{ @addtogroup   Threads
+ *    @name         Threads Priority Constants
+ *    @brief        Thread scheduling priority.
+ *
+ */
 #define read_thread_prio 1
 #define filter_thread_prio 1
 #define out_thread_prio 1
+ /**
+ * @}
+ */
 
-/* Therad periodicity (in ms)*/
+ /**
+ * @addtogroup       Threads
+ * @name             Threads Time Constant
+ * @brief            Therads periodicity (in ms).
+ */
 #define read_thread_period 1000
 
-/* Create thread stack space */
+
+ /**
+  * @{ @addtogroup   Threads
+  *    @name         Threads Space Functions
+  *    @brief        Create threads stack space.
+  *
+  */
 K_THREAD_STACK_DEFINE(read_thread_stack, STACK_SIZE);
 K_THREAD_STACK_DEFINE(filter_thread_stack, STACK_SIZE);
 K_THREAD_STACK_DEFINE(out_thread_stack, STACK_SIZE);
 
-/* Create variables for thread data */
+/**
+* @}
+*/
+
+/**
+ * @{ @addtogroup   Threads
+ *    @name         Threads Structures
+ *    @brief        Create variables for thread data.
+ *
+ */
 struct k_thread read_thread_data;
 struct k_thread filter_thread_data;
 struct k_thread out_thread_data;
+/**
+* @}
+*/
 
-/* Create task IDs */
+/**
+ * @{ @addtogroup   Threads
+ *    @name         Threads IDs
+ *    @brief        Creating task IDs.
+ *
+ */
 k_tid_t read_thread_tid;
 k_tid_t filter_thread_tid;
 k_tid_t out_thread_tid;
+/**
+* @}
+*/
 
-/* Semaphores for task synch */
+/**
+ * @{ @addtogroup   Threads
+ *    @name         Threads Semaphores
+ *    @brief        Semaphores for task synch.
+ *
+ */
 struct k_sem sem_ab;
 struct k_sem sem_bc;
+/**
+* @}
+*/
 
-/* Thread code prototypes */
-void read_thread_code(void *argA, void *argB, void *argC);
-void filter_thread_code(void *argA, void *argB, void *argC);
-void out_thread_code(void *argA, void *argB, void *argC);
+/**
+ * @{ @addtogroup   Threads
+ *    @name         Read Thread
+ *    @brief        This thread have the objective to read ADC, get one sample, check if are errors and print the value.
+ *
+ *
+ */
+void read_thread_code(void* argA, void* argB, void* argC);
+/**
+* @}
+*/
+
+/**
+ * @{ @addtogroup   Threads
+ *    @name         Filter Thread
+ *    @brief        This thread is a moving average filter, with a window size of 10 samples. Removes the
+  *                 outliers (10% or high deviation from average) and computes the average of the remaining
+ *                  samples.
+ *
+ *
+ *
+ */
+void filter_thread_code(void* argA, void* argB, void* argC);
+/**
+* @}
+*/
+
+
+/**
+ * @{ @addtogroup   Threads
+ *    @name         Output Thread
+ *    @brief        This thread send a pwm signal to one of the DevKit led.
+ *
+ *
+ */
+void out_thread_code(void* argA, void* argB, void* argC);
+/**
+* @}
+*/
+
+/** @}
+*/
 
 /* ##################### ADC ##########################*/
 
-/*ADC definitions and includes*/
+/** @defgroup       ADC
+*
+*  @{
+*/
+
+ /**
+  * @{  @name       ADC Constants
+  *     @brief      ADC definitions and includes.
+  */
 #include <hal/nrf_saadc.h>
 #define ADC_NID DT_NODELABEL(adc) 
 #define ADC_RESOLUTION 10
@@ -92,58 +208,166 @@ void out_thread_code(void *argA, void *argB, void *argC);
 #define ADC_REFERENCE ADC_REF_VDD_1_4
 #define ADC_ACQUISITION_TIME ADC_ACQ_TIME(ADC_ACQ_TIME_MICROSECONDS, 40)
 #define ADC_CHANNEL_ID 1  
+  /**
+  * @}
+  */
 
-/* This is the actual nRF ANx input to use. Note that a channel can be assigned to any ANx. In fact a channel can */
-/*    be assigned to two ANx, when differential reading is set (one ANx for the positive signal and the other one for the negative signal) */  
-/* Note also that the configuration of differnt channels is completely independent (gain, resolution, ref voltage, ...) */
+  /**
+   * @name          ADC Channel Constant
+   * @brief         This is the actual nRF ANx input to use. Note that a channel can be assigned to any ANx. In fact a channel can */
+   /*               be assigned to two ANx, when differential reading is set (one ANx for the positive signal and the other one for the negative signal)
+    */
 #define ADC_CHANNEL_INPUT NRF_SAADC_INPUT_AIN1
 
+    /**
+     * @name        ADC Buffer Size Constant
+     * @brief       This initialize the buffer size with the value of 1.
+     */
 #define BUFFER_SIZE 1
 
-/* Other defines */
-#define TIMER_INTERVAL_MSEC 1000 /* Interval between ADC samples */
+     /**
+      * @name        ADC Time Constant
+      * @brief       Interval between ADC samples
+      */
+#define TIMER_INTERVAL_MSEC 1000 
 
-/* ADC channel configuration */
+      /**
+       * @{  @struct   ADC Structures
+       *     @brief    ADC channel configuration.
+       */
 static const struct adc_channel_cfg my_channel_cfg = {
-	.gain = ADC_GAIN,
-	.reference = ADC_REFERENCE,
-	.acquisition_time = ADC_ACQUISITION_TIME,
-	.channel_id = ADC_CHANNEL_ID,
-	.input_positive = ADC_CHANNEL_INPUT
+    .gain = ADC_GAIN,
+    .reference = ADC_REFERENCE,
+    .acquisition_time = ADC_ACQUISITION_TIME,
+    .channel_id = ADC_CHANNEL_ID,
+    .input_positive = ADC_CHANNEL_INPUT
 };
 
 struct k_timer my_timer;
-const struct device *adc_dev = NULL;
+const struct device* adc_dev = NULL;
 static uint16_t adc_sample_buffer[BUFFER_SIZE];
+/**
+* @}
+*/
+
+/**
+ * @{ @addtogroup   ADC
+ *    @name         ADC Configuration Function
+ *    @brief        This function give us the information if ADC configuration was successful or not.
+ *
+ */
+void adc_setup();
+/**
+* @}
+*/
+
+/**
+ * @{ @addtogroup   ADC
+ *    @name         ADC Sample Function
+ *    @brief        This function reading and geting one sample of the potenciometer.
+ *
+ */
+static int adc_sample(void);
+/**
+* @}
+*/
+
+/** @}
+*/
 
 /* ##################### PWM ##########################*/
 
+/** @defgroup       PWM
+*
+*  @{
+*/
+
+/**
+ * @{ @addtogroup   PWM
+ *    @name         PWM Constants
+ *    @brief        This constants are related to the configuration of PWM ports.
+ *
+ */
 #define PWM0_NID DT_NODELABEL(pwm0) 
 #define GPIO0_NID DT_NODELABEL(gpio0)
+ /**
+ * @}
+ */
+
+
+ /**
+  * @{ @addtogroup   PWM
+  *    @name         PWM Structures
+  *    @brief        This variables are related to the configuration of PWM ports.
+  *
+  */
+const struct device* pwm0_dev;
+const struct device* gpio0_dev;
+/**
+* @}
+*/
+
+/**
+ * @{ @addtogroup   PWM
+ *    @name         PWM Period Variable
+ *    @brief        This variable set the period of PWM.
+ *
+ */
+unsigned int pwmPeriod_us = 1000;
+/**
+* @}
+*/
+
+/**
+ * @{ @addtogroup   PWM
+ *    @name         PWM Configuration Function
+ *    @brief        This function give us the information if the ports configuration was successful or not.
+ *
+ *
+ */
+void conf();
+/**
+* @}
+*/
+
+/** @}
+*/
+
+/* ##################### LED ##########################*/
+
+/** @defgroup       LED
+ *
+ *  @{
+ */
+
+ /**
+  * @{ @addtogroup   LED
+  *    @name         LED Constants
+  *    @brief        This constants are related to the configuration of LED output.
+  *
+  */
 #define NLED1 0x0d
 #define NPOT  0x3
+  /**
+  * @}
+  */
 
-const struct device *pwm0_dev;
-const struct device *gpio0_dev;
+  /** @}
+  */
 
-unsigned int pwmPeriod_us = 1000;
-
-void conf();
-void adc_setup();
-static int adc_sample(void);
+  /* ##################### Main ##########################*/
 
 /**
  *
  *  @name   Main
- *  @brief  State machine according with state diagram.
- *          Each case of switch is a state.
+ *  @brief  The main initialize the configurations, create threads and semaphores.
  *
  */
 
 void main(void)
 {
 	
-    /* Processing */  
+    /* Initialization of the functions */
     conf();
     adc_setup();
 
@@ -169,14 +393,6 @@ void main(void)
 
 
 }
-
-/**
-*
-*  @name   Configuration
-*  @brief  This function have the objetive of configure all the buttons.
-*          
-*
-*/
 
 void conf()
 {

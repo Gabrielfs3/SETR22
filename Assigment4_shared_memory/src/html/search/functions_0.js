@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['conf_5fbuttons_6',['conf_buttons',['../main_8c.html#a82e0816c1b5c424a979704014d4c0e49',1,'main.c']]]
+  ['adc_5fsetup_54',['adc_setup',['../group___a_d_c.html#gaf5e0a217880b6f6976ff1c2b1297f7a3',1,'main.c']]]
 ];

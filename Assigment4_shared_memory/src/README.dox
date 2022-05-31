@@ -7,10 +7,9 @@
 	Gabriel Silva\n
 	Luis Almeida
 	 
-The file main.c simule an embedded application that emulates a vending
-machine. The vending machine accepts a subset of coins and allows the user to browse available
-products, buy one product and return the credit. The inputs are push-buttons and the output is done
-via UART/Terminal. 
+	The aim of this assignment is to learn how to implement a set of cooperative real-time tasks in
+	Zephyr. Replicating the typical structure of embedded software, a mix of periodic and sporadic
+	tasks will be considered. Two distinct IPC mechanism shall be used.
 
 
 */
