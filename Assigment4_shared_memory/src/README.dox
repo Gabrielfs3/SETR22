@@ -1,0 +1,16 @@
+/**
+
+@mainpage SETR 2021|2022
+
+@authors 
+	Rafael Fonseca\n
+	Gabriel Silva\n
+	Luis Almeida
+	 
+The file main.c simule an embedded application that emulates a vending
+machine. The vending machine accepts a subset of coins and allows the user to browse available
+products, buy one product and return the credit. The inputs are push-buttons and the output is done
+via UART/Terminal. 
+
+
+*/
