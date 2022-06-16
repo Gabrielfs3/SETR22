@@ -1,0 +1,15 @@
+/**
+
+@mainpage SETR 2021|2022
+
+@authors 
+	Rafael Fonseca\n
+	Gabriel Silva\n
+	Luis Almeida
+	 
+	The aim of this assignment is to learn how to implement a set of cooperative real-time tasks in
+	Zephyr. Replicating the typical structure of embedded software, a mix of periodic and sporadic
+	tasks will be considered. Two distinct IPC mechanism shall be used.
+
+
+*/
