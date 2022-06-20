@@ -59,7 +59,8 @@ int ret;
 int ON_flag = 1;
 int print_flag = 1;
 uint16_t aux2;
-
+int hour = 00, min = 00, sec = 00, day = 00, month = 00, year = 00;
+int hour2 = 00, min2 = 00, sec2 = 00, day2 = 00, month2 = 00, year2 = 00;
 /**
 * @}
 */
@@ -138,6 +139,7 @@ void button4_pressed(const struct device *dev, struct gpio_callback *cb,
  *
  */
 #define read_thread_prio 1
+#define calendar_thread_prio 1
 #define action_thread_prio 1
 #define manual_out_thread_prio 1
 #define auto_out_thread_prio 1
@@ -151,6 +153,7 @@ void button4_pressed(const struct device *dev, struct gpio_callback *cb,
  * @brief            Therads periodicity (in ms).
  */
 #define read_thread_period 100
+#define calendar_thread_period 1000
 
 
  /**
@@ -160,6 +163,7 @@ void button4_pressed(const struct device *dev, struct gpio_callback *cb,
   *
   */
 K_THREAD_STACK_DEFINE(read_thread_stack, STACK_SIZE);
+K_THREAD_STACK_DEFINE(calendar_thread_stack, STACK_SIZE);
 K_THREAD_STACK_DEFINE(manual_out_thread_stack, STACK_SIZE);
 K_THREAD_STACK_DEFINE(action_thread_stack, STACK_SIZE);
 K_THREAD_STACK_DEFINE(auto_out_thread_stack, STACK_SIZE);
@@ -175,6 +179,7 @@ K_THREAD_STACK_DEFINE(auto_out_thread_stack, STACK_SIZE);
  *
  */
 struct k_thread read_thread_data;
+struct k_thread calendar_thread_data;
 struct k_thread manual_out_thread_data;
 struct k_thread action_thread_data;
 struct k_thread auto_out_thread_data;
@@ -189,6 +194,7 @@ struct k_thread auto_out_thread_data;
  *
  */
 k_tid_t read_thread_tid;
+k_tid_t calendar_thread_tid;
 k_tid_t manual_out_thread_tid;
 k_tid_t action_thread_tid;
 k_tid_t auto_out_thread_tid;
@@ -205,6 +211,7 @@ k_tid_t auto_out_thread_tid;
 struct k_sem sem_manual;
 struct k_sem sem_auto;
 struct k_sem sem_auto2;
+struct k_sem sem_calendar;
 /**
 * @}
 */
@@ -217,6 +224,11 @@ struct k_sem sem_auto2;
  *
  */
 void read_thread_code(void* argA, void* argB, void* argC);
+
+
+
+
+void calendar_thread_code(void* argA, void* argB, void* argC);
 /**
 * @}
 */
@@ -432,23 +444,99 @@ static const char prompt[] = "Character echo started ...\r\n";
 
 void main(void)
 {
-	
+    int scan = 0;
     /* Initialization of the functions */
     conf();
     adc_setup();
 
     /* Welcome message */
-    printf("\n\r Buenos Dias\n\r");
+    printf("\n\rBuenos Dias  \n\r");
+
+    printf("\n\rInsira o dia de hoje (ex:20): ");
+    for(int i = 0; i <= 2; i++)
+    {
+      scan = console_getchar();
+      console_putchar(scan);
+      scan -= 48;
+      if((scan <= 9) && (scan >= 0))
+      {
+        day = day*10 + scan;
+      } 
+      else
+        break;
+    }
+
+    printf("\n\rInsira o mês de hoje (ex: 11): ");
+    for(int i = 0; i <= 2; i++)
+    {
+      scan = console_getchar();
+      console_putchar(scan);
+      scan -= 48;
+      if((scan <= 9) && (scan >= 0))
+      {
+        month = month*10 + scan;
+      } 
+      else
+        break;
+    }
+    
+    printf("\n\rInsira o ano de hoje (ex: 2022): ");
+    for(int i = 0; i <= 4; i++)
+    {
+      scan = console_getchar();
+      console_putchar(scan);
+      scan -= 48;
+      if((scan <= 9) && (scan >= 0))
+      {
+        year = year*10 + scan;
+      } 
+      else
+        break;
+    }   
+
+    printf("\n\rInsira a hora atual (ex: 14): ");
+    for(int i = 0; i <= 4; i++)
+    {
+      scan = console_getchar();
+      console_putchar(scan);
+      scan -= 48;
+      if((scan <= 9) && (scan >= 0))
+      {
+        hour = hour*10 + scan;
+      } 
+      else
+        break;
+    }   
+
+    printf("\n\rInsira os minutos atuais(ex: 35): ");
+    for(int i = 0; i <= 4; i++)
+    {
+      scan = console_getchar();
+      console_putchar(scan);
+      scan -= 48;
+      if((scan <= 9) && (scan >= 0))
+      {
+        min = min*10 + scan;
+      } 
+      else
+        break;
+    }   
+    
     
     /* Create and init semaphores */
     k_sem_init(&sem_manual, 0, 1);
     k_sem_init(&sem_auto, 0, 1);
     k_sem_init(&sem_auto2, 0, 1);
+    k_sem_init(&sem_calendar, 0, 1);
     
     /* Create tasks */
     read_thread_tid = k_thread_create(&read_thread_data, read_thread_stack,
         K_THREAD_STACK_SIZEOF(read_thread_stack), read_thread_code,
         NULL, NULL, NULL, read_thread_prio, 0, K_NO_WAIT);
+        
+    calendar_thread_tid = k_thread_create(&calendar_thread_data, calendar_thread_stack,
+        K_THREAD_STACK_SIZEOF(calendar_thread_stack), calendar_thread_code,
+        NULL, NULL, NULL, calendar_thread_prio, 0, K_NO_WAIT);
 
     manual_out_thread_tid = k_thread_create(&manual_out_thread_data, manual_out_thread_stack,
         K_THREAD_STACK_SIZEOF(manual_out_thread_stack), manual_out_thread_code,
@@ -462,7 +550,6 @@ void main(void)
         K_THREAD_STACK_SIZEOF(auto_out_thread_stack), auto_out_thread_code,
         NULL, NULL, NULL, auto_out_thread_prio, 0, K_NO_WAIT);
     
-
 
 }
 
@@ -575,9 +662,8 @@ void read_thread_code(void *argA , void *argB, void *argC)
 {
     /* Timing variables to control task periodicity */
     int64_t fin_time=0, release_time=0;
-    int amostra = 0;
-    printk("\nRead Thread init\n");
-
+    printk("\nRead and Calendar Thread init\n");
+    
     /* Compute next release instant */
     release_time = k_uptime_get() + read_thread_period;
 
@@ -598,16 +684,14 @@ void read_thread_code(void *argA , void *argB, void *argC)
                 /* ADC is set to use gain of 1/4 and reference VDD/4, so input range is 0...VDD (3 V), with 10 bit resolution */
                 adc_value = (uint16_t)(1000*adc_sample_buffer[0]*((float)3/1023));
                 if(print_flag == 1)
-                  printk("\33[2K\rAdc reading: raw:%4u / %4u mV",1023-adc_sample_buffer[0],3000-adc_value);
-                amostra++;
+                  printk("\rAdc reading: raw:%4u / %4u mV",1023-adc_sample_buffer[0],3000-adc_value);
+                
                 //printk("Amostra: %d\n\n",amostra);
             }
         }
         
-        if (ON_flag == 1)
-          k_sem_give(&sem_manual);
-        else if (ON_flag == 0)
-          k_sem_give(&sem_auto);
+        k_sem_give(&sem_calendar);
+
        
         /* Wait for next release instant */ 
         fin_time = k_uptime_get();
@@ -619,9 +703,105 @@ void read_thread_code(void *argA , void *argB, void *argC)
 
 }
 
+void calendar_thread_code(void *argA , void *argB, void *argC)
+{
+    /* Timing variables to control task periodicity */
+    int64_t fin_time=0, release_time=0;
+    printk("\nRead and Calendar Thread init\n");
+    int timer = 0; 
+
+
+    /* Compute next release instant */
+    release_time = k_uptime_get() + calendar_thread_period;
+
+    /* Thread loop */
+    while(1) 
+    {
+        // Calendar
+        timer++;
+        if(timer >= 60)
+        {
+          timer = 0;
+          min++;
+        }
+        else
+          sec = timer;
+
+        if(min >= 60)
+        {
+          min = 0;
+          hour++;
+        }
+
+        if(hour >= 24)
+        {
+          hour = 0;
+          day++;
+        }
+
+        if((month == 1) | (month == 3) | (month == 5) | (month == 7) | (month == 8) | (month == 10) | (month == 11))
+        {
+          if(day > 31)
+          {
+            day = 1;
+            month++;
+          }
+        }
+        else if(month == 2 && year%100 == 0 && year%400 != 0)
+        {
+          if(day > 29)
+          {
+            day = 1;
+            month++;
+          }
+        }
+        else if(month == 2 && year%100 != 0)
+        {
+          if(day > 28)
+          {
+            day = 1;
+            month++;
+          }
+        }
+        else
+        {
+          if(day > 30)
+          {
+            day = 1;
+            month++;
+          }
+        }
+
+        if(month > 12)
+        {
+          month = 1;
+          year++;
+        }
+        
+        if(print_flag == 1)
+        {
+          printf(" ---- DATE: %d/%d/%d",day,month,year);
+          printf("  TIME: %d:%2d:%2d",hour,min,sec);
+        }
+       
+        if (ON_flag == 1)
+          k_sem_give(&sem_manual);
+        else if (ON_flag == 0)
+          k_sem_give(&sem_auto);
+
+        /* Wait for next release instant */ 
+        fin_time = k_uptime_get();
+        if( fin_time < release_time) {
+            k_msleep(release_time - fin_time);
+            release_time += calendar_thread_period;
+        }
+    }
+
+}
+
 void manual_out_thread_code(void *argA , void *argB, void *argC)
 {
-    printk("\nOut Thread init\n");
+    printk("\nManual Out Thread init\n");
     //int out;
     while(1)
     {
@@ -706,6 +886,72 @@ void action_thread_code(void *argA , void *argB, void *argC)
         
         if(print_flag == 0)
         {
+
+          printk("\nInsira o dia em que quer comeaçar o programa: ");
+          for(int i = 0; i <= 2; i++)
+          {
+            c = console_getchar();
+            console_putchar(c);
+            c = c-48;
+            
+            if(c >= 0 && c <= 9)
+              day2 = day2*10 + c;
+            else
+              break;
+          }
+          
+          printk("\nInsira o mês em que quer começar o programa: ");
+          for(int i = 0; i <= 2; i++)
+          {
+            c = console_getchar();
+            console_putchar(c);
+            c = c-48;
+            
+            if(c >= 0 && c <= 9)
+              month2 = month2*10 + c;
+            else
+              break;
+          }
+
+          printk("\nInsira o ano em que quer começar o programa: ");
+          for(int i = 0; i <= 4; i++)
+          {
+            c = console_getchar();
+            console_putchar(c);
+            c = c-48;
+            
+            if(c >= 0 && c <= 9)
+              year2 = year2*10 + c;
+            else
+              break;
+          }
+
+          printk("\nInsira a hora em que quer começar o programa: ");
+          for(int i = 0; i <= 3; i++)
+          {
+            c = console_getchar();
+            console_putchar(c);
+            c = c-48;
+            
+            if(c >= 0 && c <= 9)
+              hour2 = hour2*10 + c;
+            else
+              break;
+          }
+
+          printk("\nInsira os minutos em que quer começar o programa: ");
+          for(int i = 0; i <= 2; i++)
+          {
+            c = console_getchar();
+            console_putchar(c);
+            c = c-48;
+            
+            if(c >= 0 && c <= 9)
+              min2 = min2*10 + c;
+            else
+              break;
+          }
+
           printk("\nInsira a intensidade em %%: ");
           for(int i = 0; i <= 2; i++)
           {
@@ -715,10 +961,12 @@ void action_thread_code(void *argA , void *argB, void *argC)
             
             if(c >= 0 && c <= 9)
               aux = aux*10 + c;
+            else
+              break;
           }
+
           adc_out = (uint16_t)(aux*1023/100);
-          printk("avg: %4u", aux2);
-          printk("\n");
+
         }
         print_flag = 1;
 
@@ -729,19 +977,23 @@ void action_thread_code(void *argA , void *argB, void *argC)
 
 void auto_out_thread_code(void *argA , void *argB, void *argC)
 {
-    printk("\nOut Thread init\n");
+    printk("\nAuto Out Thread init\n\n");
     //int out;
     while(1)
     {
         k_sem_take(&sem_auto2, K_FOREVER);
 
-        ret = 0;
+        if((day == day2) && (month == month2) && (year == year2) && (hour == hour2) && (min == min2))
+        {
+          ret = 0;
 
-        pwm_value = 1023-adc_out;
+          pwm_value = 1023-adc_out;
 
-        ret = pwm_pin_set_usec(pwm0_dev, NLED1,
-		      pwmPeriod_us,(unsigned int)((pwmPeriod_us*pwm_value)/1023), PWM_POLARITY_NORMAL);
-        if (ret)
-          printk("Error %d: failed to set pulse width\n", ret);
+          ret = pwm_pin_set_usec(pwm0_dev, NLED1,
+  		      pwmPeriod_us,(unsigned int)((pwmPeriod_us*pwm_value)/1023), PWM_POLARITY_NORMAL);
+          if (ret)
+            printk("Error %d: failed to set pulse width\n", ret);
+        }
+
     }
 }
