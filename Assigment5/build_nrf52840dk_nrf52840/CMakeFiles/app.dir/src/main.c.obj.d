@@ -142,4 +142,7 @@ CMakeFiles/app.dir/src/main.c.obj: ../src/main.c \
  C:/Users/gabi_/ncs/v1.9.1/zephyr/include/drivers/adc.h \
  C:/Users/gabi_/ncs/v1.9.1/zephyr/include/dt-bindings/adc/adc.h \
  zephyr/include/generated/syscalls/adc.h \
+ C:/Users/gabi_/ncs/v1.9.1/zephyr/include/console/console.h \
+ C:/Users/gabi_/ncs/v1.9.1/zephyr/lib/libc/minimal/include/sys/types.h \
+ C:/Users/gabi_/ncs/v1.9.1/zephyr/lib/libc/minimal/include/sys/_types.h \
  C:/Users/gabi_/ncs/v1.9.1/modules/hal/nordic/nrfx/hal/nrf_saadc.h

@@ -36,8 +36,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <drivers/gpio.h>
 #include <drivers/adc.h>
+#include <console/console.h>
+
 /**
 * @}
 */
@@ -55,8 +56,10 @@ int pwm_value;
 uint16_t adc_out;
 int err = 0;
 int ret;
-long int nact = 0;
 int ON_flag = 1;
+int print_flag = 1;
+uint16_t aux2;
+
 /**
 * @}
 */
@@ -117,6 +120,7 @@ void button4_pressed(const struct device *dev, struct gpio_callback *cb,
 		    uint32_t pins)
 {
     ON_flag = 0;
+    print_flag = 0;
 }
 
 /**
@@ -136,6 +140,7 @@ void button4_pressed(const struct device *dev, struct gpio_callback *cb,
 #define read_thread_prio 1
 #define action_thread_prio 1
 #define manual_out_thread_prio 1
+#define auto_out_thread_prio 1
  /**
  * @}
  */
@@ -157,6 +162,7 @@ void button4_pressed(const struct device *dev, struct gpio_callback *cb,
 K_THREAD_STACK_DEFINE(read_thread_stack, STACK_SIZE);
 K_THREAD_STACK_DEFINE(manual_out_thread_stack, STACK_SIZE);
 K_THREAD_STACK_DEFINE(action_thread_stack, STACK_SIZE);
+K_THREAD_STACK_DEFINE(auto_out_thread_stack, STACK_SIZE);
 
 /**
 * @}
@@ -171,6 +177,7 @@ K_THREAD_STACK_DEFINE(action_thread_stack, STACK_SIZE);
 struct k_thread read_thread_data;
 struct k_thread manual_out_thread_data;
 struct k_thread action_thread_data;
+struct k_thread auto_out_thread_data;
 /**
 * @}
 */
@@ -184,6 +191,7 @@ struct k_thread action_thread_data;
 k_tid_t read_thread_tid;
 k_tid_t manual_out_thread_tid;
 k_tid_t action_thread_tid;
+k_tid_t auto_out_thread_tid;
 /**
 * @}
 */
@@ -240,6 +248,8 @@ void manual_out_thread_code(void* argA, void* argB, void* argC);
 /**
 * @}
 */
+
+void auto_out_thread_code(void* argA, void* argB, void* argC);
 
 /** @}
 */
@@ -417,6 +427,8 @@ void conf();
  *  @brief  The main initialize the configurations, create threads and semaphores.
  *
  */
+ 
+static const char prompt[] = "Character echo started ...\r\n";
 
 void main(void)
 {
@@ -426,7 +438,7 @@ void main(void)
     adc_setup();
 
     /* Welcome message */
-    printf("\n\r Illustration of the use of shmem + semaphores\n\r");
+    printf("\n\r Buenos Dias\n\r");
     
     /* Create and init semaphores */
     k_sem_init(&sem_manual, 0, 1);
@@ -445,7 +457,10 @@ void main(void)
     action_thread_tid = k_thread_create(&action_thread_data, action_thread_stack,
         K_THREAD_STACK_SIZEOF(action_thread_stack), action_thread_code,
         NULL, NULL, NULL, action_thread_prio, 0, K_NO_WAIT);
-
+    
+    auto_out_thread_tid = k_thread_create(&auto_out_thread_data, auto_out_thread_stack,
+        K_THREAD_STACK_SIZEOF(auto_out_thread_stack), auto_out_thread_code,
+        NULL, NULL, NULL, auto_out_thread_prio, 0, K_NO_WAIT);
     
 
 
@@ -453,7 +468,14 @@ void main(void)
 
 void conf()
 {
-  /* Bind to GPIO 0 and PWM0 */
+  
+    /* Init console service */
+    console_init();
+    
+    /* Output a string*/ 
+    console_write(NULL, prompt, sizeof(prompt) - 1);
+
+    /* Bind to GPIO 0 and PWM0 */
     gpio0_dev = device_get_binding(DT_LABEL(GPIO0_NID));
     if (gpio0_dev == NULL) {
         printk("Error: Failed to bind to GPIO0\n\r");        
@@ -575,7 +597,8 @@ void read_thread_code(void *argA , void *argB, void *argC)
             else {
                 /* ADC is set to use gain of 1/4 and reference VDD/4, so input range is 0...VDD (3 V), with 10 bit resolution */
                 adc_value = (uint16_t)(1000*adc_sample_buffer[0]*((float)3/1023));
-                printk("\33[2K\rAdc reading: raw:%4u / %4u mV",adc_sample_buffer[0],adc_value);
+                if(print_flag == 1)
+                  printk("\33[2K\rAdc reading: raw:%4u / %4u mV",1023-adc_sample_buffer[0],3000-adc_value);
                 amostra++;
                 //printk("Amostra: %d\n\n",amostra);
             }
@@ -602,10 +625,8 @@ void manual_out_thread_code(void *argA , void *argB, void *argC)
     //int out;
     while(1)
     {
-        if(ON_flag == 1)
-          k_sem_take(&sem_manual, K_FOREVER);
-        if(ON_flag == 0)
-          k_sem_take(&sem_auto2, K_FOREVER);
+        k_sem_take(&sem_manual, K_FOREVER);
+
         ret = 0;
 
         pwm_value = 1023-adc_out;
@@ -617,19 +638,110 @@ void manual_out_thread_code(void *argA , void *argB, void *argC)
     }
 }
 
+
 void action_thread_code(void *argA , void *argB, void *argC)
 {
     printk("\nAction Thread init\n");
     //int adc_out_per;
+    int dif1, dif2, sum1, sum2, average, i, k, j;
+    int values_in[10] = {0,0,0,0,0,0,0,0,0,0};
 
     while(1)
     {
         k_sem_take(&sem_auto,  K_FOREVER);
-        //printk("Insira quanto tempo quer para começar o modo automático em segundos:  ");
-        //scanf(adc_out_per);
+        
 
-        //adc_out = 1023*
+        // FILTRO 
+
+        average = 0;
+        sum1 = 0;
+        sum2 = 0;
+        j = 0;
+
+        for(i = 0; i <= 9; i++)
+        {
+          if(i == 0)
+          {
+            for(k = 0; k < 9; k++)
+            {
+              // shift left das posi??es
+              values_in[k] = values_in[k+1];
+              // inserir valor lido na ultima posi??o do array
+              if(k == 8)
+                values_in[k+1] = 1023 - adc_sample_buffer[0];
+            }
+          }
+          // Calcular soma dos valores do array
+          sum1 += values_in[i];
+
+          if(i == 9)
+          {
+            // m?dia e diferen?as para condi??es
+            average = sum1 / 10;
+            //printk("\naverage: %d\n",average);
+            dif1 = average + average*0.1;
+            dif2 = average - average*0.1;
+        
+            for(i = 0; i <= 9; i++)
+            {
+              // soma dos valores aprovados pelo filtro
+              if((values_in[i] < dif1) && (values_in[i] > dif2))
+              {
+                sum2 += values_in[i];
+                j++;
+              }
+            }
+            
+            // if porque ? impossivel dividir por 0
+            if(j != 0)
+              aux2 = sum2 / j;
+          }
+        }
+
+
+        // Leitura do terminal
+
+        uint8_t c;
+        uint16_t aux = 0;
+        
+        if(print_flag == 0)
+        {
+          printk("\nInsira a intensidade em %%: ");
+          for(int i = 0; i <= 2; i++)
+          {
+            c = console_getchar();
+            console_putchar(c);
+            c = c-48;
+            
+            if(c >= 0 && c <= 9)
+              aux = aux*10 + c;
+          }
+          adc_out = (uint16_t)(aux*1023/100);
+          printk("avg: %4u", aux2);
+          printk("\n");
+        }
+        print_flag = 1;
 
         k_sem_give(&sem_auto2);
+    }
+}
+
+
+void auto_out_thread_code(void *argA , void *argB, void *argC)
+{
+    printk("\nOut Thread init\n");
+    //int out;
+    while(1)
+    {
+        k_sem_take(&sem_auto2, K_FOREVER);
+
+        ret = 0;
+
+        pwm_value = 1023-adc_out;
+
+        ret = pwm_pin_set_usec(pwm0_dev, NLED1,
+		      pwmPeriod_us,(unsigned int)((pwmPeriod_us*pwm_value)/1023), PWM_POLARITY_NORMAL);
+        if (ret)
+          printk("Error %d: failed to set pulse width\n", ret);
     }
 }

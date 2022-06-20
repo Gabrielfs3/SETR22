@@ -16,7 +16,6 @@
   <ProjectSessionItem path="Assigment5;build;all"/>
   <ProjectSessionItem path="Assigment5;build;app/libapp.a"/>
   <ProjectSessionItem path="Assigment5;build;app/libapp.a;C_COMPILER__app_"/>
-  <ProjectSessionItem path="Assigment5;build;modules/hal_nordic/nrfx/libmodules__hal_nordic__nrfx.a"/>
   <ProjectSessionItem path="Assigment5;build;zephyr/zephyr.elf"/>
  </Project>
  <Register1/>
@@ -42,9 +41,7 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="5" y="622" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../src/main.c" selected="1" top="602" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="30" y="19" useTextEdit="1" openedFrom="C:/Users/gabi_/ncs/v1.9.1/zephyr/samples/basic/Assigment5/src/main.c" useBinaryEdit="0" left="0" path="../../../../include/dt-bindings/pwm/pwm.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="35" y="1071" useTextEdit="1" openedFrom="C:/Users/gabi_/ncs/v1.9.1/zephyr/samples/basic/Assigment5/src/main.c" useBinaryEdit="0" left="0" path="../../../../include/kernel.h" selected="0" top="1079" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="23" y="701" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../src/main.c" selected="1" top="683" codecName="Default"/>
  </Files>
  <ARMCrossStudioWindow activeProject="zephyr/zephyr.elf(build)" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Common" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="" debugSearchPath="" autoConnectCapabilities="3711"/>
 </session>
