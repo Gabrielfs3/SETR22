@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Assigment 4: Threads</title>
+<title>Assigment 5: Threads</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -22,10 +22,10 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Assigment 4
+   <div id="projectname">Assigment 5
    &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">Implementing cooperative tasks in Zephyr</div>
+   <div id="projectbrief">Implementing a closed loop control application in Zephyr</div>
   </td>
  </tr>
  </tbody>
@@ -70,40 +70,19 @@ $(function() {
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
-Threads Size Constant</h2></td></tr>
-<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp765c1132434e0af706a821a0af58fef5"></a>Size of stack area used by each thread (can be thread specific, if necessary). </p>
-</td></tr>
-<tr class="memitem:ga6423a880df59733d2d9b509c7718d3a9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga6423a880df59733d2d9b509c7718d3a9">STACK_SIZE</a>&#160;&#160;&#160;1024</td></tr>
-<tr class="separator:ga6423a880df59733d2d9b509c7718d3a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
-Threads Priority Constants</h2></td></tr>
-<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp0d8e5824bf415bd1f44836401323b58b"></a>Thread scheduling priority. </p>
-</td></tr>
-<tr class="memitem:ga60151fb40d88993506f29dc2f8c348d4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga60151fb40d88993506f29dc2f8c348d4">read_thread_prio</a>&#160;&#160;&#160;1</td></tr>
-<tr class="separator:ga60151fb40d88993506f29dc2f8c348d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf3fad3273563c52bd3798f2ce2c00f5e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gaf3fad3273563c52bd3798f2ce2c00f5e">filter_thread_prio</a>&#160;&#160;&#160;1</td></tr>
-<tr class="separator:gaf3fad3273563c52bd3798f2ce2c00f5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gacd3253de18504ed261dccb1bfe32ac28"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gacd3253de18504ed261dccb1bfe32ac28">out_thread_prio</a>&#160;&#160;&#160;1</td></tr>
-<tr class="separator:gacd3253de18504ed261dccb1bfe32ac28"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
-Threads Time Constant</h2></td></tr>
-<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrpd8e74eb63c125ea45442ac84f0417975"></a>Therads periodicity (in ms). </p>
-</td></tr>
-<tr class="memitem:gaccef7cc68292da9ce47ae82b44b73224"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gaccef7cc68292da9ce47ae82b44b73224">read_thread_period</a>&#160;&#160;&#160;1000</td></tr>
-<tr class="separator:gaccef7cc68292da9ce47ae82b44b73224"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Threads Space Functions</h2></td></tr>
 <tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp660d38d144427138af389113345a5dc4"></a>Create threads stack space. </p>
 </td></tr>
-<tr class="memitem:gab3a488d96fb66a6bdbf1ec610a19f59a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gab3a488d96fb66a6bdbf1ec610a19f59a">K_THREAD_STACK_DEFINE</a> (read_thread_stack, <a class="el" href="group___threads.html#ga6423a880df59733d2d9b509c7718d3a9">STACK_SIZE</a>)</td></tr>
+<tr class="memitem:gab3a488d96fb66a6bdbf1ec610a19f59a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gab3a488d96fb66a6bdbf1ec610a19f59a">K_THREAD_STACK_DEFINE</a> (read_thread_stack, STACK_SIZE)</td></tr>
 <tr class="separator:gab3a488d96fb66a6bdbf1ec610a19f59a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaa63cce7d34ec4212d3e0a091c98190cf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gaa63cce7d34ec4212d3e0a091c98190cf">K_THREAD_STACK_DEFINE</a> (filter_thread_stack, <a class="el" href="group___threads.html#ga6423a880df59733d2d9b509c7718d3a9">STACK_SIZE</a>)</td></tr>
-<tr class="separator:gaa63cce7d34ec4212d3e0a091c98190cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga500d5d5c319974e8c941a9e708890b63"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga500d5d5c319974e8c941a9e708890b63">K_THREAD_STACK_DEFINE</a> (out_thread_stack, <a class="el" href="group___threads.html#ga6423a880df59733d2d9b509c7718d3a9">STACK_SIZE</a>)</td></tr>
-<tr class="separator:ga500d5d5c319974e8c941a9e708890b63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadb853575ed32ebd7fa757e8ea5c74d44"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gadb853575ed32ebd7fa757e8ea5c74d44">K_THREAD_STACK_DEFINE</a> (calendar_thread_stack, STACK_SIZE)</td></tr>
+<tr class="separator:gadb853575ed32ebd7fa757e8ea5c74d44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga274140c12c0c5748207bd62cbd0c74ae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga274140c12c0c5748207bd62cbd0c74ae">K_THREAD_STACK_DEFINE</a> (manual_out_thread_stack, STACK_SIZE)</td></tr>
+<tr class="separator:ga274140c12c0c5748207bd62cbd0c74ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga71db4b708bc0e4dedef3296e22fce870"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga71db4b708bc0e4dedef3296e22fce870">K_THREAD_STACK_DEFINE</a> (action_thread_stack, STACK_SIZE)</td></tr>
+<tr class="separator:ga71db4b708bc0e4dedef3296e22fce870"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1612f672899914c4433d953214436e3d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga1612f672899914c4433d953214436e3d">K_THREAD_STACK_DEFINE</a> (auto_out_thread_stack, STACK_SIZE)</td></tr>
+<tr class="separator:ga1612f672899914c4433d953214436e3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Threads Structures</h2></td></tr>
@@ -111,10 +90,14 @@ Threads Structures</h2></td></tr>
 </td></tr>
 <tr class="memitem:ga53a432c2c03a4ec961f6c530d5784f39"><td class="memItemLeft" align="right" valign="top">struct k_thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga53a432c2c03a4ec961f6c530d5784f39">read_thread_data</a></td></tr>
 <tr class="separator:ga53a432c2c03a4ec961f6c530d5784f39"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab78686b80fbf5adc8a2385af6e2db579"><td class="memItemLeft" align="right" valign="top">struct k_thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gab78686b80fbf5adc8a2385af6e2db579">filter_thread_data</a></td></tr>
-<tr class="separator:gab78686b80fbf5adc8a2385af6e2db579"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0a0d30375bc14a233389b047ca068c92"><td class="memItemLeft" align="right" valign="top">struct k_thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga0a0d30375bc14a233389b047ca068c92">out_thread_data</a></td></tr>
-<tr class="separator:ga0a0d30375bc14a233389b047ca068c92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2fc5a0bc91b937e34ff39833496c50a1"><td class="memItemLeft" align="right" valign="top">struct k_thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga2fc5a0bc91b937e34ff39833496c50a1">calendar_thread_data</a></td></tr>
+<tr class="separator:ga2fc5a0bc91b937e34ff39833496c50a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8365bbd0e1f218684a004ef9acca90de"><td class="memItemLeft" align="right" valign="top">struct k_thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga8365bbd0e1f218684a004ef9acca90de">manual_out_thread_data</a></td></tr>
+<tr class="separator:ga8365bbd0e1f218684a004ef9acca90de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae8ee564b32eae606a10448c0215299b7"><td class="memItemLeft" align="right" valign="top">struct k_thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gae8ee564b32eae606a10448c0215299b7">action_thread_data</a></td></tr>
+<tr class="separator:gae8ee564b32eae606a10448c0215299b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7b7406e31626d4f37e00c816e58533d8"><td class="memItemLeft" align="right" valign="top">struct k_thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga7b7406e31626d4f37e00c816e58533d8">auto_out_thread_data</a></td></tr>
+<tr class="separator:ga7b7406e31626d4f37e00c816e58533d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Threads IDs</h2></td></tr>
@@ -122,122 +105,73 @@ Threads IDs</h2></td></tr>
 </td></tr>
 <tr class="memitem:ga8a624b1680a1282d93886fda1060c51f"><td class="memItemLeft" align="right" valign="top">k_tid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga8a624b1680a1282d93886fda1060c51f">read_thread_tid</a></td></tr>
 <tr class="separator:ga8a624b1680a1282d93886fda1060c51f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4591b10f916f5411c9a264a6ed53c0f0"><td class="memItemLeft" align="right" valign="top">k_tid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga4591b10f916f5411c9a264a6ed53c0f0">filter_thread_tid</a></td></tr>
-<tr class="separator:ga4591b10f916f5411c9a264a6ed53c0f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga994e98a9ddd4636a113e3decc099616a"><td class="memItemLeft" align="right" valign="top">k_tid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga994e98a9ddd4636a113e3decc099616a">out_thread_tid</a></td></tr>
-<tr class="separator:ga994e98a9ddd4636a113e3decc099616a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf80a8bffccf485e2a9cfed65b3763090"><td class="memItemLeft" align="right" valign="top">k_tid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gaf80a8bffccf485e2a9cfed65b3763090">calendar_thread_tid</a></td></tr>
+<tr class="separator:gaf80a8bffccf485e2a9cfed65b3763090"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab74b8705896a5798db9f2b47024f49a6"><td class="memItemLeft" align="right" valign="top">k_tid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gab74b8705896a5798db9f2b47024f49a6">manual_out_thread_tid</a></td></tr>
+<tr class="separator:gab74b8705896a5798db9f2b47024f49a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0dd930fe689c259f12f0ac58871a6b14"><td class="memItemLeft" align="right" valign="top">k_tid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga0dd930fe689c259f12f0ac58871a6b14">action_thread_tid</a></td></tr>
+<tr class="separator:ga0dd930fe689c259f12f0ac58871a6b14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga37dd5490c7f736530678271d2ae80e61"><td class="memItemLeft" align="right" valign="top">k_tid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga37dd5490c7f736530678271d2ae80e61">auto_out_thread_tid</a></td></tr>
+<tr class="separator:ga37dd5490c7f736530678271d2ae80e61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Threads Semaphores</h2></td></tr>
 <tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp6d6d40ff39004edfaba7962ed9e22e5a"></a>Semaphores for task synch. </p>
 </td></tr>
-<tr class="memitem:ga82e13125c2f279157fcf738219ff21ba"><td class="memItemLeft" align="right" valign="top">struct k_sem&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga82e13125c2f279157fcf738219ff21ba">sem_ab</a></td></tr>
-<tr class="separator:ga82e13125c2f279157fcf738219ff21ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaddc907d18e7e98a64a832ac1c7be5ad1"><td class="memItemLeft" align="right" valign="top">struct k_sem&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gaddc907d18e7e98a64a832ac1c7be5ad1">sem_bc</a></td></tr>
-<tr class="separator:gaddc907d18e7e98a64a832ac1c7be5ad1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa6effc0f262204c8f4a9722e9fddbf15"><td class="memItemLeft" align="right" valign="top">struct k_sem&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gaa6effc0f262204c8f4a9722e9fddbf15">sem_manual</a></td></tr>
+<tr class="separator:gaa6effc0f262204c8f4a9722e9fddbf15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafb9a99093968ae172699c3cb81bfe11d"><td class="memItemLeft" align="right" valign="top">struct k_sem&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gafb9a99093968ae172699c3cb81bfe11d">sem_auto</a></td></tr>
+<tr class="separator:gafb9a99093968ae172699c3cb81bfe11d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3388d42da96a681d49d669d81f588373"><td class="memItemLeft" align="right" valign="top">struct k_sem&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga3388d42da96a681d49d669d81f588373">sem_auto2</a></td></tr>
+<tr class="separator:ga3388d42da96a681d49d669d81f588373"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad0aef893831e5af23fce2e9fb911bce0"><td class="memItemLeft" align="right" valign="top">struct k_sem&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gad0aef893831e5af23fce2e9fb911bce0">sem_calendar</a></td></tr>
+<tr class="separator:gad0aef893831e5af23fce2e9fb911bce0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Read Thread</h2></td></tr>
-<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp5a26a8e31a742f2a9555b6f2352a6389"></a>This thread have the objective to read <a class="el" href="struct_a_d_c.html" title="ADC channel configuration.">ADC</a>, get one sample, check if are errors and print the value. </p>
+<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp5a26a8e31a742f2a9555b6f2352a6389"></a>This thread have the objective to read <a class="el" href="struct_a_d_c.html" title="ADC channel configuration.">ADC</a>, get one sample and adapts by a filter the value to the input of controller. </p>
 </td></tr>
 <tr class="memitem:ga28f7d0db4afde2ac3fa6ee5b317bb177"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga28f7d0db4afde2ac3fa6ee5b317bb177">read_thread_code</a> (void *argA, void *argB, void *argC)</td></tr>
 <tr class="separator:ga28f7d0db4afde2ac3fa6ee5b317bb177"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
-Filter Thread</h2></td></tr>
-<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrpc207567be35cd114ebcffdd1931df555"></a>This thread is a moving average filter, with a window size of 10 samples. Removes the outliers (10% or high deviation from average) and computes the average of the remaining samples. </p>
+Calendar Thread</h2></td></tr>
+<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrpfe2d0e1e7ede72cc5fa24e5e8236abd7"></a>This thread have the objective to update the calendar (years, months, days, hours and minutes). </p>
 </td></tr>
-<tr class="memitem:ga7f8f52598969d7620c9db4d99a02ccba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga7f8f52598969d7620c9db4d99a02ccba">filter_thread_code</a> (void *argA, void *argB, void *argC)</td></tr>
-<tr class="separator:ga7f8f52598969d7620c9db4d99a02ccba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae701e89bf66bc2d9c65bd6a7de2db294"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gae701e89bf66bc2d9c65bd6a7de2db294">calendar_thread_code</a> (void *argA, void *argB, void *argC)</td></tr>
+<tr class="separator:gae701e89bf66bc2d9c65bd6a7de2db294"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
-Output Thread</h2></td></tr>
-<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrpafb99cb9bc2a160217ca15ac7227e9be"></a>This thread send a pwm signal to one of the DevKit led. </p>
+Action Thread</h2></td></tr>
+<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrpc9448adc12b33268a612d2589f6dcccb"></a>This is a automatic thread that have the objective to ask for the intensity and calendar intended. </p>
 </td></tr>
-<tr class="memitem:ga2feb211182bfd81e27d2437b0e91a2f7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga2feb211182bfd81e27d2437b0e91a2f7">out_thread_code</a> (void *argA, void *argB, void *argC)</td></tr>
-<tr class="separator:ga2feb211182bfd81e27d2437b0e91a2f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga51ecbb7ca79e965ca5c265dacd82c0a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga51ecbb7ca79e965ca5c265dacd82c0a2">action_thread_code</a> (void *argA, void *argB, void *argC)</td></tr>
+<tr class="separator:ga51ecbb7ca79e965ca5c265dacd82c0a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
+Manual Out Thread</h2></td></tr>
+<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp0ba69d68893600e023b2332bb39f7ae2"></a>This thread have the objective to send the value variations applied by the buttons to a pwm signal. </p>
+</td></tr>
+<tr class="memitem:ga5d7394540b6ede9bddd32a389e59d141"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#ga5d7394540b6ede9bddd32a389e59d141">manual_out_thread_code</a> (void *argA, void *argB, void *argC)</td></tr>
+<tr class="separator:ga5d7394540b6ede9bddd32a389e59d141"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
+Automatic Out Thread</h2></td></tr>
+<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp9e5b737b4d001a9d94092b8911ee273a"></a>This thread apply the intensity in the calendar intended. </p>
+</td></tr>
+<tr class="memitem:gab7c1bcdb2773ca5f5e0f99c9da38acc6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___threads.html#gab7c1bcdb2773ca5f5e0f99c9da38acc6">auto_out_thread_code</a> (void *argA, void *argB, void *argC)</td></tr>
+<tr class="separator:gab7c1bcdb2773ca5f5e0f99c9da38acc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="gaf3fad3273563c52bd3798f2ce2c00f5e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaf3fad3273563c52bd3798f2ce2c00f5e">&#9670;&nbsp;</a></span>filter_thread_prio</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define filter_thread_prio&#160;&#160;&#160;1</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="gacd3253de18504ed261dccb1bfe32ac28"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gacd3253de18504ed261dccb1bfe32ac28">&#9670;&nbsp;</a></span>out_thread_prio</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define out_thread_prio&#160;&#160;&#160;1</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="gaccef7cc68292da9ce47ae82b44b73224"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaccef7cc68292da9ce47ae82b44b73224">&#9670;&nbsp;</a></span>read_thread_period</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define read_thread_period&#160;&#160;&#160;1000</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ga60151fb40d88993506f29dc2f8c348d4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga60151fb40d88993506f29dc2f8c348d4">&#9670;&nbsp;</a></span>read_thread_prio</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define read_thread_prio&#160;&#160;&#160;1</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ga6423a880df59733d2d9b509c7718d3a9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga6423a880df59733d2d9b509c7718d3a9">&#9670;&nbsp;</a></span>STACK_SIZE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define STACK_SIZE&#160;&#160;&#160;1024</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ga7f8f52598969d7620c9db4d99a02ccba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga7f8f52598969d7620c9db4d99a02ccba">&#9670;&nbsp;</a></span>filter_thread_code()</h2>
+<a id="ga51ecbb7ca79e965ca5c265dacd82c0a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga51ecbb7ca79e965ca5c265dacd82c0a2">&#9670;&nbsp;</a></span>action_thread_code()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void filter_thread_code </td>
+          <td class="memname">void action_thread_code </td>
           <td>(</td>
           <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>argA</em>, </td>
@@ -264,8 +198,76 @@ Output Thread</h2></td></tr>
 
 </div>
 </div>
-<a id="gaa63cce7d34ec4212d3e0a091c98190cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaa63cce7d34ec4212d3e0a091c98190cf">&#9670;&nbsp;</a></span>K_THREAD_STACK_DEFINE() <span class="overload">[1/3]</span></h2>
+<a id="gab7c1bcdb2773ca5f5e0f99c9da38acc6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab7c1bcdb2773ca5f5e0f99c9da38acc6">&#9670;&nbsp;</a></span>auto_out_thread_code()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void auto_out_thread_code </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>argA</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>argB</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>argC</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="gae701e89bf66bc2d9c65bd6a7de2db294"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gae701e89bf66bc2d9c65bd6a7de2db294">&#9670;&nbsp;</a></span>calendar_thread_code()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void calendar_thread_code </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>argA</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>argB</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>argC</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ga71db4b708bc0e4dedef3296e22fce870"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga71db4b708bc0e4dedef3296e22fce870">&#9670;&nbsp;</a></span>K_THREAD_STACK_DEFINE() <span class="overload">[1/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -273,13 +275,13 @@ Output Thread</h2></td></tr>
         <tr>
           <td class="memname">K_THREAD_STACK_DEFINE </td>
           <td>(</td>
-          <td class="paramtype">filter_thread_stack&#160;</td>
+          <td class="paramtype">action_thread_stack&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group___threads.html#ga6423a880df59733d2d9b509c7718d3a9">STACK_SIZE</a>&#160;</td>
+          <td class="paramtype">STACK_SIZE&#160;</td>
           <td class="paramname">&#160;</td>
         </tr>
         <tr>
@@ -292,8 +294,8 @@ Output Thread</h2></td></tr>
 
 </div>
 </div>
-<a id="ga500d5d5c319974e8c941a9e708890b63"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga500d5d5c319974e8c941a9e708890b63">&#9670;&nbsp;</a></span>K_THREAD_STACK_DEFINE() <span class="overload">[2/3]</span></h2>
+<a id="ga1612f672899914c4433d953214436e3d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1612f672899914c4433d953214436e3d">&#9670;&nbsp;</a></span>K_THREAD_STACK_DEFINE() <span class="overload">[2/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -301,13 +303,69 @@ Output Thread</h2></td></tr>
         <tr>
           <td class="memname">K_THREAD_STACK_DEFINE </td>
           <td>(</td>
-          <td class="paramtype">out_thread_stack&#160;</td>
+          <td class="paramtype">auto_out_thread_stack&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group___threads.html#ga6423a880df59733d2d9b509c7718d3a9">STACK_SIZE</a>&#160;</td>
+          <td class="paramtype">STACK_SIZE&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="gadb853575ed32ebd7fa757e8ea5c74d44"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gadb853575ed32ebd7fa757e8ea5c74d44">&#9670;&nbsp;</a></span>K_THREAD_STACK_DEFINE() <span class="overload">[3/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">K_THREAD_STACK_DEFINE </td>
+          <td>(</td>
+          <td class="paramtype">calendar_thread_stack&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">STACK_SIZE&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ga274140c12c0c5748207bd62cbd0c74ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga274140c12c0c5748207bd62cbd0c74ae">&#9670;&nbsp;</a></span>K_THREAD_STACK_DEFINE() <span class="overload">[4/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">K_THREAD_STACK_DEFINE </td>
+          <td>(</td>
+          <td class="paramtype">manual_out_thread_stack&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">STACK_SIZE&#160;</td>
           <td class="paramname">&#160;</td>
         </tr>
         <tr>
@@ -321,7 +379,7 @@ Output Thread</h2></td></tr>
 </div>
 </div>
 <a id="gab3a488d96fb66a6bdbf1ec610a19f59a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gab3a488d96fb66a6bdbf1ec610a19f59a">&#9670;&nbsp;</a></span>K_THREAD_STACK_DEFINE() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#gab3a488d96fb66a6bdbf1ec610a19f59a">&#9670;&nbsp;</a></span>K_THREAD_STACK_DEFINE() <span class="overload">[5/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -335,7 +393,7 @@ Output Thread</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group___threads.html#ga6423a880df59733d2d9b509c7718d3a9">STACK_SIZE</a>&#160;</td>
+          <td class="paramtype">STACK_SIZE&#160;</td>
           <td class="paramname">&#160;</td>
         </tr>
         <tr>
@@ -348,14 +406,14 @@ Output Thread</h2></td></tr>
 
 </div>
 </div>
-<a id="ga2feb211182bfd81e27d2437b0e91a2f7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga2feb211182bfd81e27d2437b0e91a2f7">&#9670;&nbsp;</a></span>out_thread_code()</h2>
+<a id="ga5d7394540b6ede9bddd32a389e59d141"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga5d7394540b6ede9bddd32a389e59d141">&#9670;&nbsp;</a></span>manual_out_thread_code()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void out_thread_code </td>
+          <td class="memname">void manual_out_thread_code </td>
           <td>(</td>
           <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>argA</em>, </td>
@@ -417,56 +475,112 @@ Output Thread</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="gab78686b80fbf5adc8a2385af6e2db579"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gab78686b80fbf5adc8a2385af6e2db579">&#9670;&nbsp;</a></span>filter_thread_data</h2>
+<a id="gae8ee564b32eae606a10448c0215299b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gae8ee564b32eae606a10448c0215299b7">&#9670;&nbsp;</a></span>action_thread_data</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct k_thread filter_thread_data</td>
+          <td class="memname">struct k_thread action_thread_data</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ga4591b10f916f5411c9a264a6ed53c0f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga4591b10f916f5411c9a264a6ed53c0f0">&#9670;&nbsp;</a></span>filter_thread_tid</h2>
+<a id="ga0dd930fe689c259f12f0ac58871a6b14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0dd930fe689c259f12f0ac58871a6b14">&#9670;&nbsp;</a></span>action_thread_tid</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">k_tid_t filter_thread_tid</td>
+          <td class="memname">k_tid_t action_thread_tid</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ga0a0d30375bc14a233389b047ca068c92"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga0a0d30375bc14a233389b047ca068c92">&#9670;&nbsp;</a></span>out_thread_data</h2>
+<a id="ga7b7406e31626d4f37e00c816e58533d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga7b7406e31626d4f37e00c816e58533d8">&#9670;&nbsp;</a></span>auto_out_thread_data</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct k_thread out_thread_data</td>
+          <td class="memname">struct k_thread auto_out_thread_data</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ga994e98a9ddd4636a113e3decc099616a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga994e98a9ddd4636a113e3decc099616a">&#9670;&nbsp;</a></span>out_thread_tid</h2>
+<a id="ga37dd5490c7f736530678271d2ae80e61"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga37dd5490c7f736530678271d2ae80e61">&#9670;&nbsp;</a></span>auto_out_thread_tid</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">k_tid_t out_thread_tid</td>
+          <td class="memname">k_tid_t auto_out_thread_tid</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ga2fc5a0bc91b937e34ff39833496c50a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2fc5a0bc91b937e34ff39833496c50a1">&#9670;&nbsp;</a></span>calendar_thread_data</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct k_thread calendar_thread_data</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="gaf80a8bffccf485e2a9cfed65b3763090"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf80a8bffccf485e2a9cfed65b3763090">&#9670;&nbsp;</a></span>calendar_thread_tid</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">k_tid_t calendar_thread_tid</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ga8365bbd0e1f218684a004ef9acca90de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8365bbd0e1f218684a004ef9acca90de">&#9670;&nbsp;</a></span>manual_out_thread_data</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct k_thread manual_out_thread_data</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="gab74b8705896a5798db9f2b47024f49a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab74b8705896a5798db9f2b47024f49a6">&#9670;&nbsp;</a></span>manual_out_thread_tid</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">k_tid_t manual_out_thread_tid</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -501,28 +615,56 @@ Output Thread</h2></td></tr>
 
 </div>
 </div>
-<a id="ga82e13125c2f279157fcf738219ff21ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga82e13125c2f279157fcf738219ff21ba">&#9670;&nbsp;</a></span>sem_ab</h2>
+<a id="gafb9a99093968ae172699c3cb81bfe11d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gafb9a99093968ae172699c3cb81bfe11d">&#9670;&nbsp;</a></span>sem_auto</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct k_sem sem_ab</td>
+          <td class="memname">struct k_sem sem_auto</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="gaddc907d18e7e98a64a832ac1c7be5ad1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaddc907d18e7e98a64a832ac1c7be5ad1">&#9670;&nbsp;</a></span>sem_bc</h2>
+<a id="ga3388d42da96a681d49d669d81f588373"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3388d42da96a681d49d669d81f588373">&#9670;&nbsp;</a></span>sem_auto2</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct k_sem sem_bc</td>
+          <td class="memname">struct k_sem sem_auto2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="gad0aef893831e5af23fce2e9fb911bce0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gad0aef893831e5af23fce2e9fb911bce0">&#9670;&nbsp;</a></span>sem_calendar</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct k_sem sem_calendar</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="gaa6effc0f262204c8f4a9722e9fddbf15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa6effc0f262204c8f4a9722e9fddbf15">&#9670;&nbsp;</a></span>sem_manual</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct k_sem sem_manual</td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -1943,13 +1943,14 @@ void auto_out_thread_code(void *argA , void *argB, void *argC)
         {
            
           // Controlador P
-          err = adc_out-aux2;
-    13b8:	4b19      	ldr	r3, [pc, #100]	; (1420 <auto_out_thread_code+0xbc>)
-                    
+          //err = adc_out*100/1023-aux2*100/500;
+          
           pwm_value = 1023-adc_out;
+    13b8:	4b19      	ldr	r3, [pc, #100]	; (1420 <auto_out_thread_code+0xbc>)
     13ba:	491a      	ldr	r1, [pc, #104]	; (1424 <auto_out_thread_code+0xc0>)
-          err = adc_out-aux2;
     13bc:	881b      	ldrh	r3, [r3, #0]
+          //pwm_value = Kp*err + b;
+          //printf(" pwm: %d",pwm_value);
 
           //printf(" adcout: %d - avg: %d - err: %d - pwm: %d",adc_out,aux2,err,pwm_value);
 

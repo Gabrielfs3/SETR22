@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Assigment 4: PWM</title>
+<title>Assigment 5: PWM</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -22,10 +22,10 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Assigment 4
+   <div id="projectname">Assigment 5
    &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">Implementing cooperative tasks in Zephyr</div>
+   <div id="projectbrief">Implementing a closed loop control application in Zephyr</div>
   </td>
  </tr>
  </tbody>
@@ -70,15 +70,6 @@ $(function() {
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
-PWM Constants</h2></td></tr>
-<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp3085bd19f3cddac2e2e8b0d977bb5d43"></a>This constants are related to the configuration of PWM ports. </p>
-</td></tr>
-<tr class="memitem:gab48b150a8660d0152dfde25b42c1755f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_w_m.html#gab48b150a8660d0152dfde25b42c1755f">PWM0_NID</a>&#160;&#160;&#160;DT_NODELABEL(pwm0)</td></tr>
-<tr class="separator:gab48b150a8660d0152dfde25b42c1755f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4c0e6f34369bef1deb3a9efae6ac14fb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_w_m.html#ga4c0e6f34369bef1deb3a9efae6ac14fb">GPIO0_NID</a>&#160;&#160;&#160;DT_NODELABEL(gpio0)</td></tr>
-<tr class="separator:ga4c0e6f34369bef1deb3a9efae6ac14fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 PWM Structures</h2></td></tr>
 <tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp0d9e29fd0643827b03edba8778bd783d"></a>This variables are related to the configuration of PWM ports. </p>
 </td></tr>
@@ -91,7 +82,7 @@ PWM Structures</h2></td></tr>
 PWM Period Variable</h2></td></tr>
 <tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrpda92841453acdcaf9b5be3042ac8b188"></a>This variable set the period of PWM. </p>
 </td></tr>
-<tr class="memitem:ga15f86ab5a7130e95bce1eb5e0083536d"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_w_m.html#ga15f86ab5a7130e95bce1eb5e0083536d">pwmPeriod_us</a> = 1000</td></tr>
+<tr class="memitem:ga15f86ab5a7130e95bce1eb5e0083536d"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_w_m.html#ga15f86ab5a7130e95bce1eb5e0083536d">pwmPeriod_us</a> = 100</td></tr>
 <tr class="separator:ga15f86ab5a7130e95bce1eb5e0083536d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
@@ -102,35 +93,6 @@ PWM Configuration Function</h2></td></tr>
 <tr class="separator:ga4ba13bb7d20dc93cebfcb1986ce3c876"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="ga4c0e6f34369bef1deb3a9efae6ac14fb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga4c0e6f34369bef1deb3a9efae6ac14fb">&#9670;&nbsp;</a></span>GPIO0_NID</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define GPIO0_NID&#160;&#160;&#160;DT_NODELABEL(gpio0)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="gab48b150a8660d0152dfde25b42c1755f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gab48b150a8660d0152dfde25b42c1755f">&#9670;&nbsp;</a></span>PWM0_NID</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define PWM0_NID&#160;&#160;&#160;DT_NODELABEL(pwm0)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ga4ba13bb7d20dc93cebfcb1986ce3c876"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga4ba13bb7d20dc93cebfcb1986ce3c876">&#9670;&nbsp;</a></span>conf()</h2>
@@ -185,7 +147,7 @@ PWM Configuration Function</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned int pwmPeriod_us = 1000</td>
+          <td class="memname">unsigned int pwmPeriod_us = 100</td>
         </tr>
       </table>
 </div><div class="memdoc">

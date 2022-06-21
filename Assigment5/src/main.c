@@ -8,14 +8,16 @@
 /**   @file         main.c
  *    @brief        Implementing cooperative tasks in Zephyr
  *
- *                  The file main.c implement a set of cooperative real-time tasks in
- *	                Zephyr. In this file we are using threads and semaphores to execute the tasks.
+ *                  The file main.c implement an application to control the light intensity of a given region. The
+ *                  system comprises a light sensor, an illumination system and a Human-Machine Interface
  *
  * 
  *    @author       Rafael Fonseca, Gabriel Silva e Luis Almeida
- *    @date         30 May 2022
- *    @bug          No known bugs.
- */
+ *    @date         21 June 2022
+ *    @bug          Bad readings on phototransistor.
+ *    @bug          Controller is not working.
+ *    @bug          We cant set a functional period of time.
+ *
 
 
 
@@ -72,76 +74,12 @@ int hour2 = 00, min2 = 00, sec2 = 00, day2 = 00, month2 = 00, year2 = 00;
 *  @{
 */
 
-
-// CONFIGURAR NODES E ESTRUTURAS DOS BOTÕES
-#define SW0_NODE	DT_ALIAS(sw0)
-#define SW1_NODE	DT_ALIAS(sw1)
-#define SW2_NODE	DT_ALIAS(sw2)
-#define SW3_NODE	DT_ALIAS(sw3)
-
-static const struct gpio_dt_spec button1 = GPIO_DT_SPEC_GET_OR(SW0_NODE, gpios,
-							      {0});
-static const struct gpio_dt_spec button2 = GPIO_DT_SPEC_GET_OR(SW1_NODE, gpios,
-							      {0});
-static const struct gpio_dt_spec button3 = GPIO_DT_SPEC_GET_OR(SW2_NODE, gpios,
-							      {0});
-static const struct gpio_dt_spec button4 = GPIO_DT_SPEC_GET_OR(SW3_NODE, gpios,
-							      {0});
-static struct gpio_callback button1_cb_data;
-static struct gpio_callback button2_cb_data;
-static struct gpio_callback button3_cb_data;
-static struct gpio_callback button4_cb_data;
-
-void button1_pressed(const struct device *dev, struct gpio_callback *cb,
-		    uint32_t pins)
-{
-  // Aumentar a intensidade em modo manual com o butão 2
-  if(ON_flag == 1)
-  {
-    if(adc_out+93 >= 1023)
-      adc_out = 1023;
-    else
-      adc_out += 93;
-   }
-}
-void button2_pressed(const struct device *dev, struct gpio_callback *cb,
-		    uint32_t pins)
-{
-  // Diminuir a intensidade em modo manual com o butão 2
-  if(ON_flag == 1)
-  {
-    if(adc_out-93 <= 0)
-      adc_out = 0;
-    else
-      adc_out -= 93;
-  }
-}
-void button3_pressed(const struct device *dev, struct gpio_callback *cb,
-		    uint32_t pins)
-{
-    ON_flag = 1;
-}
-void button4_pressed(const struct device *dev, struct gpio_callback *cb,
-		    uint32_t pins)
-{
-    // flag de desligar a máquina para modo automático
-    ON_flag = 0;
-    // flag para desativar alguns dos prints
-    print_flag = 0;
-    day2 = 0;
-    month2 = 0;
-    year2 = 0;
-    hour2 = 0;
-    min2 = 0;
-}
-
 /**
 * @addtogroup       Threads
 * @name             Threads Size Constant
 * @brief            Size of stack area used by each thread (can be thread specific, if necessary).
 */
 #define STACK_SIZE 1024
-
 
 /**
  * @{ @addtogroup   Threads
@@ -165,7 +103,6 @@ void button4_pressed(const struct device *dev, struct gpio_callback *cb,
  */
 #define read_thread_period 100
 #define calendar_thread_period 100
-
 
  /**
   * @{ @addtogroup   Threads
@@ -230,15 +167,22 @@ struct k_sem sem_calendar;
 /**
  * @{ @addtogroup   Threads
  *    @name         Read Thread
- *    @brief        This thread have the objective to read ADC, get one sample, check if are errors and print the value.
+ *    @brief        This thread have the objective to read ADC, get one sample and adapts by a filter the value to the input of controller.
  *
  *
  */
 void read_thread_code(void* argA, void* argB, void* argC);
+/**
+* @}
+*/
 
-
-
-
+/**
+ * @{ @addtogroup   Threads
+ *    @name         Calendar Thread
+ *    @brief        This thread have the objective to update the calendar (years, months, days, hours and minutes).
+ *
+ *
+ */
 void calendar_thread_code(void* argA, void* argB, void* argC);
 /**
 * @}
@@ -247,9 +191,7 @@ void calendar_thread_code(void* argA, void* argB, void* argC);
 /**
  * @{ @addtogroup   Threads
  *    @name         Action Thread
- *    @brief        This thread is a moving average filter, with a window size of 10 samples. Removes the
-  *                 outliers (10% or high deviation from average) and computes the average of the remaining
- *                  samples.
+ *    @brief        This is a automatic thread that have the objective to ask for the intensity and calendar intended.
  *
  *
  *
@@ -259,11 +201,10 @@ void action_thread_code(void* argA, void* argB, void* argC);
 * @}
 */
 
-
 /**
  * @{ @addtogroup   Threads
- *    @name         Output Thread
- *    @brief        This thread send a pwm signal to one of the DevKit led.
+ *    @name         Manual Out Thread
+ *    @brief        This thread have the objective to send the value variations applied by the buttons to a pwm signal.
  *
  *
  */
@@ -272,7 +213,17 @@ void manual_out_thread_code(void* argA, void* argB, void* argC);
 * @}
 */
 
+/**
+ * @{ @addtogroup   Threads
+ *    @name         Automatic Out Thread
+ *    @brief        This thread apply the intensity in the calendar intended.
+ *
+ *
+ */
 void auto_out_thread_code(void* argA, void* argB, void* argC);
+/**
+* @}
+*/
 
 /** @}
 */
@@ -422,7 +373,7 @@ void conf();
 
 /* ##################### LED ##########################*/
 
-/** @defgroup       LED
+/** @defgroup        LED
  *
  *  @{
  */
@@ -434,22 +385,153 @@ void conf();
   *
   */
 #define NLED1 0x0d
-
 #define NFOTO  0x3
-  /**
-  * @}
-  */
+/**
+* @}
+*/
 
-  /** @}
-  */
+/** @}
+*/
 
-  /* ##################### Main ##########################*/
+
+/* ##################### Buttons ##########################*/
+
+/** @defgroup         Buttons
+ *
+ *  @{
+ */
+
+ /**
+  * @{ @addtogroup   Buttons
+  *    @name         Buttons Constants
+  *    @brief        This constants are related to the configuration of the buttons.
+  *
+  */
+#define SW0_NODE	DT_ALIAS(sw0)
+#define SW1_NODE	DT_ALIAS(sw1)
+#define SW2_NODE	DT_ALIAS(sw2)
+#define SW3_NODE	DT_ALIAS(sw3)
+/**
+* @}
+*/
+
+
+ /**
+  * @{ @addtogroup   Buttons
+  *    @name         Buttons Structures
+  *    @brief        This variables are related to the configuration of buttons ports.
+  *
+  */
+static const struct gpio_dt_spec button1 = GPIO_DT_SPEC_GET_OR(SW0_NODE, gpios,
+							      {0});
+static const struct gpio_dt_spec button2 = GPIO_DT_SPEC_GET_OR(SW1_NODE, gpios,
+							      {0});
+static const struct gpio_dt_spec button3 = GPIO_DT_SPEC_GET_OR(SW2_NODE, gpios,
+							      {0});
+static const struct gpio_dt_spec button4 = GPIO_DT_SPEC_GET_OR(SW3_NODE, gpios,
+							      {0});
+static struct gpio_callback button1_cb_data;
+static struct gpio_callback button2_cb_data;
+static struct gpio_callback button3_cb_data;
+static struct gpio_callback button4_cb_data;
+/**
+* @}
+*/
+
+/**
+ * @{ @addtogroup   Buttons
+ *    @name         Button Function 1
+ *    @brief        This function configure the button 2 to manually increase the LED intensity.
+ *
+ */
+void button1_pressed(const struct device *dev, struct gpio_callback *cb,
+		    uint32_t pins)
+{
+  // Aumentar a intensidade em modo manual com o butï¿½o 2
+  if(ON_flag == 1)
+  {
+    if(adc_out+93 >= 1023)
+      adc_out = 1023;
+    else
+      adc_out += 93;
+   }
+}
+/**
+* @}
+*/
+
+/**
+ * @{ @addtogroup   Buttons
+ *    @name         Button Function 2
+ *    @brief        This function configure the button 2 to manually decrease the LED intensity.
+ *
+ */
+void button2_pressed(const struct device *dev, struct gpio_callback *cb,
+		    uint32_t pins)
+{
+  // Diminuir a intensidade em modo manual com o butï¿½o 2
+  if(ON_flag == 1)
+  {
+    if(adc_out-93 <= 0)
+      adc_out = 0;
+    else
+      adc_out -= 93;
+  }
+}
+/**
+* @}
+*/
+
+
+/**
+ * @{ @addtogroup   Buttons
+ *    @name         Button Function 3
+ *    @brief        This function set the machine to manual mode.
+ *
+ */
+void button3_pressed(const struct device *dev, struct gpio_callback *cb,
+		    uint32_t pins)
+{
+    ON_flag = 1;
+}
+/**
+* @}
+*/
+
+/**
+ * @{ @addtogroup   Buttons
+ *    @name         Button Function 3
+ *    @brief        This function set the machine to automatic mode.
+ *
+ */
+void button4_pressed(const struct device *dev, struct gpio_callback *cb,
+		    uint32_t pins)
+{
+    // flag de desligar a mï¿½quina para modo automï¿½tico
+    ON_flag = 0;
+    // flag para desativar alguns dos prints
+    print_flag = 0;
+    day2 = 0;
+    month2 = 0;
+    year2 = 0;
+    hour2 = 0;
+    min2 = 0;
+}
+/**
+* @}
+*/
+
+/** @}
+*/
+
+
+/* ##################### Main ##########################*/
 
 /**
  *
- *  @name   Main
- *  @brief  The main initialize the configurations, create threads and semaphores.
- *
+ *  @name             Main
+ *  @brief            The main initialize the configurations, create threads and semaphores, ask to configure the current calendar.
+ *s
  */
  
 static const char prompt[] = "Character echo started ...\r\n";
@@ -464,7 +546,7 @@ void main(void)
     /* Welcome message */
     printf("\n\rBuenos Dias  \n\r");
 
-    // ATUALZAR CALENDÁRIO ATUAL DA MÁQUINA
+    // ATUALZAR CALENDï¿½RIO ATUAL DA Mï¿½QUINA
     printf("\n\rInsira o dia de hoje (ex:20): ");
     for(int i = 0; i <= 2; i++)
     {
@@ -479,7 +561,7 @@ void main(void)
         break;
     }
 
-    printf("\n\rInsira o mês de hoje (ex: 11): ");
+    printf("\n\rInsira o mï¿½s de hoje (ex: 11): ");
     for(int i = 0; i <= 2; i++)
     {
       scan = console_getchar();
@@ -643,7 +725,7 @@ void adc_setup()
         printk("adc_channel_setup() failed with error code %d\n\r", err);
     }
 
-/* It is recommended to calibrate the SAADC at least once before use, and whenever the ambient temperature has changed by more than 10 °C */
+/* It is recommended to calibrate the SAADC at least once before use, and whenever the ambient temperature has changed by more than 10 ï¿½C */
     NRF_SAADC->TASKS_CALIBRATEOFFSET = 1;
 }
 
@@ -699,10 +781,10 @@ void read_thread_code(void *argA , void *argB, void *argC)
             else {
                 /* ADC is set to use gain of 1/4 and reference VDD/4, so input range is 0...VDD (3 V), with 10 bit resolution */
                 adc_value = (uint16_t)(1000*adc_sample_buffer[0]*((float)3/1023));
-                // só dá print se tiver a flag ativa
+                // sï¿½ dï¿½ print se tiver a flag ativa
                 if(print_flag == 1)
                   printk("\rAdc reading: raw:%4u / %4u mV",1023-adc_sample_buffer[0],3000-adc_value);
-                // inversão das leituras nos prints, visto que o transistor funciona ao contrário do desejado
+                // inversï¿½o das leituras nos prints, visto que o transistor funciona ao contrï¿½rio do desejado
                 
             }
         }
@@ -781,7 +863,7 @@ void calendar_thread_code(void *argA , void *argB, void *argC)
     /* Thread loop */
     while(1) 
     {
-        // Calendário
+        // Calendï¿½rio
         timer++;
         if(timer >= 600)
         {
@@ -848,13 +930,13 @@ void calendar_thread_code(void *argA , void *argB, void *argC)
           printf("  TIME: %d:%2d:%2d",hour,min,sec/10);
         }
        
-        // Se estiver em manual ativa um semáforo, em automático ativa um diferente
+        // Se estiver em manual ativa um semï¿½foro, em automï¿½tico ativa um diferente
         if (ON_flag == 1)
           k_sem_give(&sem_manual);
         else if (ON_flag == 0)
           k_sem_give(&sem_auto);
 
-        // PAUSA DE 1seg para atualizar o calendário
+        // PAUSA DE 1seg para atualizar o calendï¿½rio
         /* Wait for next release instant */ 
         fin_time = k_uptime_get();
         if( fin_time < release_time) {
@@ -875,7 +957,7 @@ void manual_out_thread_code(void *argA , void *argB, void *argC)
 
         ret = 0;
 
-        // inversão do pwm
+        // inversï¿½o do pwm
         pwm_value = 1023-adc_out;
 
         ret = pwm_pin_set_usec(pwm0_dev, NLED1,
@@ -895,16 +977,16 @@ void action_thread_code(void *argA , void *argB, void *argC)
         k_sem_take(&sem_auto,  K_FOREVER);
         
 
-        // Leitura do terminal para inserir a que horas a intensidade será aplicada e quanta intensidade
+        // Leitura do terminal para inserir a que horas a intensidade serï¿½ aplicada e quanta intensidade
 
         uint8_t c;
         uint16_t aux = 0;
         
-        // flag criada apenas para no terminal não aparecerem os prints das outras threads
+        // flag criada apenas para no terminal nï¿½o aparecerem os prints das outras threads
         if(print_flag == 0)
         {
 
-          printk("\nInsira o dia em que quer comeaçar o programa: ");
+          printk("\nInsira o dia em que quer comeaï¿½ar o programa: ");
           for(int i = 0; i <= 2; i++)
           {
             c = console_getchar();
@@ -917,7 +999,7 @@ void action_thread_code(void *argA , void *argB, void *argC)
               break;
           }
           
-          printk("\nInsira o mês em que quer começar o programa: ");
+          printk("\nInsira o mï¿½s em que quer comeï¿½ar o programa: ");
           for(int i = 0; i <= 2; i++)
           {
             c = console_getchar();
@@ -930,7 +1012,7 @@ void action_thread_code(void *argA , void *argB, void *argC)
               break;
           }
 
-          printk("\nInsira o ano em que quer começar o programa: ");
+          printk("\nInsira o ano em que quer comeï¿½ar o programa: ");
           for(int i = 0; i <= 4; i++)
           {
             c = console_getchar();
@@ -943,7 +1025,7 @@ void action_thread_code(void *argA , void *argB, void *argC)
               break;
           }
 
-          printk("\nInsira a hora em que quer começar o programa: ");
+          printk("\nInsira a hora em que quer comeï¿½ar o programa: ");
           for(int i = 0; i <= 4; i++)
           {
             c = console_getchar();
@@ -956,7 +1038,7 @@ void action_thread_code(void *argA , void *argB, void *argC)
               break;
           }
 
-          printk("\nInsira os minutos em que quer começar o programa: ");
+          printk("\nInsira os minutos em que quer comeï¿½ar o programa: ");
           for(int i = 0; i <= 2; i++)
           {
             c = console_getchar();
