@@ -72,6 +72,8 @@ int hour2 = 00, min2 = 00, sec2 = 00, day2 = 00, month2 = 00, year2 = 00;
 *  @{
 */
 
+
+// CONFIGURAR NODES E ESTRUTURAS DOS BOTÕES
 #define SW0_NODE	DT_ALIAS(sw0)
 #define SW1_NODE	DT_ALIAS(sw1)
 #define SW2_NODE	DT_ALIAS(sw2)
@@ -93,6 +95,7 @@ static struct gpio_callback button4_cb_data;
 void button1_pressed(const struct device *dev, struct gpio_callback *cb,
 		    uint32_t pins)
 {
+  // Aumentar a intensidade em modo manual com o butão 2
   if(ON_flag == 1)
   {
     if(adc_out+93 >= 1023)
@@ -104,6 +107,7 @@ void button1_pressed(const struct device *dev, struct gpio_callback *cb,
 void button2_pressed(const struct device *dev, struct gpio_callback *cb,
 		    uint32_t pins)
 {
+  // Diminuir a intensidade em modo manual com o butão 2
   if(ON_flag == 1)
   {
     if(adc_out-93 <= 0)
@@ -120,7 +124,9 @@ void button3_pressed(const struct device *dev, struct gpio_callback *cb,
 void button4_pressed(const struct device *dev, struct gpio_callback *cb,
 		    uint32_t pins)
 {
+    // flag de desligar a máquina para modo automático
     ON_flag = 0;
+    // flag para desativar alguns dos prints
     print_flag = 0;
 }
 
@@ -153,7 +159,7 @@ void button4_pressed(const struct device *dev, struct gpio_callback *cb,
  * @brief            Therads periodicity (in ms).
  */
 #define read_thread_period 100
-#define calendar_thread_period 1000
+#define calendar_thread_period 100
 
 
  /**
@@ -423,7 +429,8 @@ void conf();
   *
   */
 #define NLED1 0x0d
-#define NPOT  0x3
+
+#define NFOTO  0x3
   /**
   * @}
   */
@@ -452,6 +459,7 @@ void main(void)
     /* Welcome message */
     printf("\n\rBuenos Dias  \n\r");
 
+    // ATUALZAR CALENDÁRIO ATUAL DA MÁQUINA
     printf("\n\rInsira o dia de hoje (ex:20): ");
     for(int i = 0; i <= 2; i++)
     {
@@ -583,7 +591,7 @@ void conf()
 
     
     /* Configure Potentiometer PIN */    
-    ret = gpio_pin_configure(gpio0_dev, NPOT, GPIO_INPUT);
+    ret = gpio_pin_configure(gpio0_dev, NFOTO, GPIO_INPUT);
     if (ret < 0) {
         printk("Error %d: Failed to configure POT\n\r", ret);
 	return;
@@ -660,6 +668,9 @@ static int adc_sample(void)
 /* Thread code implementation */
 void read_thread_code(void *argA , void *argB, void *argC)
 {
+    int dif1, dif2, sum1, sum2, average, i, k, j;
+    int values_in[10] = {0,0,0,0,0,0,0,0,0,0};
+
     /* Timing variables to control task periodicity */
     int64_t fin_time=0, release_time=0;
     printk("\nRead and Calendar Thread init\n");
@@ -683,11 +694,59 @@ void read_thread_code(void *argA , void *argB, void *argC)
             else {
                 /* ADC is set to use gain of 1/4 and reference VDD/4, so input range is 0...VDD (3 V), with 10 bit resolution */
                 adc_value = (uint16_t)(1000*adc_sample_buffer[0]*((float)3/1023));
+                // só dá print se tiver a flag ativa
                 if(print_flag == 1)
                   printk("\rAdc reading: raw:%4u / %4u mV",1023-adc_sample_buffer[0],3000-adc_value);
+                // inversão das leituras nos prints, visto que o transistor funciona ao contrário do desejado
                 
-                //printk("Amostra: %d\n\n",amostra);
             }
+        }
+
+         // FILTRO PARA O CONTROLADOR
+
+        average = 0;
+        sum1 = 0;
+        sum2 = 0;
+        j = 0;
+
+        for(i = 0; i <= 9; i++)
+        {
+          if(i == 0)
+          {
+            for(k = 0; k < 9; k++)
+            {
+              // shift left das posi??es
+              values_in[k] = values_in[k+1];
+              // inserir valor lido na ultima posi??o do array
+              if(k == 8)
+                values_in[k+1] = 1023 - adc_sample_buffer[0];
+            }
+          }
+          // Calcular soma dos valores do array
+          sum1 += values_in[i];
+
+          if(i == 9)
+          {
+            // m?dia e diferen?as para condi??es
+            average = sum1 / 10;
+            //printk("\naverage: %d\n",average);
+            dif1 = average + average*0.1;
+            dif2 = average - average*0.1;
+        
+            for(i = 0; i <= 9; i++)
+            {
+              // soma dos valores aprovados pelo filtro
+              if((values_in[i] < dif1) && (values_in[i] > dif2))
+              {
+                sum2 += values_in[i];
+                j++;
+              }
+            }
+            
+            // if porque ? impossivel dividir por 0
+            if(j != 0)
+              aux2 = sum2 / j;
+          }
         }
         
         k_sem_give(&sem_calendar);
@@ -717,9 +776,9 @@ void calendar_thread_code(void *argA , void *argB, void *argC)
     /* Thread loop */
     while(1) 
     {
-        // Calendar
+        // Calendário
         timer++;
-        if(timer >= 60)
+        if(timer >= 600)
         {
           timer = 0;
           min++;
@@ -781,14 +840,16 @@ void calendar_thread_code(void *argA , void *argB, void *argC)
         if(print_flag == 1)
         {
           printf(" ---- DATE: %d/%d/%d",day,month,year);
-          printf("  TIME: %d:%2d:%2d",hour,min,sec);
+          printf("  TIME: %d:%2d:%2d",hour,min,sec/10);
         }
        
+        // Se estiver em manual ativa um semáforo, em automático ativa um diferente
         if (ON_flag == 1)
           k_sem_give(&sem_manual);
         else if (ON_flag == 0)
           k_sem_give(&sem_auto);
 
+        // PAUSA DE 1seg para atualizar o calendário
         /* Wait for next release instant */ 
         fin_time = k_uptime_get();
         if( fin_time < release_time) {
@@ -809,6 +870,7 @@ void manual_out_thread_code(void *argA , void *argB, void *argC)
 
         ret = 0;
 
+        // inversão do pwm
         pwm_value = 1023-adc_out;
 
         ret = pwm_pin_set_usec(pwm0_dev, NLED1,
@@ -822,68 +884,18 @@ void manual_out_thread_code(void *argA , void *argB, void *argC)
 void action_thread_code(void *argA , void *argB, void *argC)
 {
     printk("\nAction Thread init\n");
-    //int adc_out_per;
-    int dif1, dif2, sum1, sum2, average, i, k, j;
-    int values_in[10] = {0,0,0,0,0,0,0,0,0,0};
 
     while(1)
     {
         k_sem_take(&sem_auto,  K_FOREVER);
         
 
-        // FILTRO 
-
-        average = 0;
-        sum1 = 0;
-        sum2 = 0;
-        j = 0;
-
-        for(i = 0; i <= 9; i++)
-        {
-          if(i == 0)
-          {
-            for(k = 0; k < 9; k++)
-            {
-              // shift left das posi??es
-              values_in[k] = values_in[k+1];
-              // inserir valor lido na ultima posi??o do array
-              if(k == 8)
-                values_in[k+1] = 1023 - adc_sample_buffer[0];
-            }
-          }
-          // Calcular soma dos valores do array
-          sum1 += values_in[i];
-
-          if(i == 9)
-          {
-            // m?dia e diferen?as para condi??es
-            average = sum1 / 10;
-            //printk("\naverage: %d\n",average);
-            dif1 = average + average*0.1;
-            dif2 = average - average*0.1;
-        
-            for(i = 0; i <= 9; i++)
-            {
-              // soma dos valores aprovados pelo filtro
-              if((values_in[i] < dif1) && (values_in[i] > dif2))
-              {
-                sum2 += values_in[i];
-                j++;
-              }
-            }
-            
-            // if porque ? impossivel dividir por 0
-            if(j != 0)
-              aux2 = sum2 / j;
-          }
-        }
-
-
-        // Leitura do terminal
+        // Leitura do terminal para inserir a que horas a intensidade será aplicada e quanta intensidade
 
         uint8_t c;
         uint16_t aux = 0;
         
+        // flag criada apenas para no terminal não aparecerem os prints das outras threads
         if(print_flag == 0)
         {
 
@@ -927,7 +939,7 @@ void action_thread_code(void *argA , void *argB, void *argC)
           }
 
           printk("\nInsira a hora em que quer começar o programa: ");
-          for(int i = 0; i <= 3; i++)
+          for(int i = 0; i <= 4; i++)
           {
             c = console_getchar();
             console_putchar(c);
@@ -953,7 +965,7 @@ void action_thread_code(void *argA , void *argB, void *argC)
           }
 
           printk("\nInsira a intensidade em %%: ");
-          for(int i = 0; i <= 2; i++)
+          for(int i = 0; i <= 3; i++)
           {
             c = console_getchar();
             console_putchar(c);
@@ -978,17 +990,27 @@ void action_thread_code(void *argA , void *argB, void *argC)
 void auto_out_thread_code(void *argA , void *argB, void *argC)
 {
     printk("\nAuto Out Thread init\n\n");
+    int err;
+    double Kp = 4;
+    double ki = 0;
+    double integral=0;
     //int out;
     while(1)
     {
         k_sem_take(&sem_auto2, K_FOREVER);
 
+        // O Controlador apenas vai ser executado na hora inserida
         if((day == day2) && (month == month2) && (year == year2) && (hour == hour2) && (min == min2))
         {
-          ret = 0;
-
+           
+          // Controlador P
+          err = adc_out-aux2
+                    
           pwm_value = 1023-adc_out;
 
+          //printf(" adcout: %d - avg: %d - err: %d - pwm: %d",adc_out,aux2,err,pwm_value);
+
+          ret = 0; 
           ret = pwm_pin_set_usec(pwm0_dev, NLED1,
   		      pwmPeriod_us,(unsigned int)((pwmPeriod_us*pwm_value)/1023), PWM_POLARITY_NORMAL);
           if (ret)
