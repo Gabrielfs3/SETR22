@@ -128,6 +128,11 @@ void button4_pressed(const struct device *dev, struct gpio_callback *cb,
     ON_flag = 0;
     // flag para desativar alguns dos prints
     print_flag = 0;
+    day2 = 0;
+    month2 = 0;
+    year2 = 0;
+    hour2 = 0;
+    min2 = 0;
 }
 
 /**
@@ -1004,7 +1009,7 @@ void auto_out_thread_code(void *argA , void *argB, void *argC)
         {
            
           // Controlador P
-          err = adc_out-aux2
+          err = adc_out-aux2;
                     
           pwm_value = 1023-adc_out;
 
